@@ -1,0 +1,1507 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Singapore Tax Maximiser (YA 2026) — IRAS Tax &amp; SRS Relief Optimiser</title>
+  <meta
+    name="description"
+    content="Calculate 2026 Singapore IRAS progressive resident income tax (YA 2026), enforce the S$80,000 personal relief cap, see instant tax ROI on SRS and CPF RSTU top-ups, and auto-optimize your tax bracket."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --background: #f6f8fa;
+      --content: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --card-border: #e2e8f0;
+      --foreground: #0f172a;
+      --muted-foreground: #64748b;
+      --primary: #0f172a;
+      --primary-foreground: #ffffff;
+      --secondary: #f1f5f9;
+      --secondary-foreground: #334155;
+      --link: #059669;
+      --success: #059669;
+      --warning: #d97706;
+      --error: #e11d48;
+      color-scheme: light;
+    }
+
+    body.theme-dark {
+      --background: #0b1117;
+      --content: #0f1722;
+      --card: #111822;
+      --border: #1e293b;
+      --card-border: #1e293b;
+      --foreground: #f8fafc;
+      --muted-foreground: #94a3b8;
+      --primary: #38bdf8;
+      --primary-foreground: #0b1117;
+      --secondary: #1e293b;
+      --secondary-foreground: #e2e8f0;
+      --link: #34d399;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #f43f5e;
+      color-scheme: dark;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    }
+
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+
+    input[type="range"].tax-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 9999px;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"].tax-slider:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+    input[type="range"].tax-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 9999px;
+      background: var(--card);
+      border: 2.5px solid var(--success);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    input[type="range"].tax-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+    input[type="range"].tax-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 9999px;
+      background: var(--card);
+      border: 2.5px solid var(--success);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+      cursor: pointer;
+    }
+    input[type="range"].tax-slider.slider-capped::-webkit-slider-thumb {
+      border-color: var(--error);
+    }
+    input[type="range"].tax-slider.slider-capped::-moz-range-thumb {
+      border-color: var(--error);
+    }
+    .bg-shielded-stripes {
+      background-image: repeating-linear-gradient(
+        -45deg,
+        color-mix(in srgb, var(--success) 32%, transparent),
+        color-mix(in srgb, var(--success) 32%, transparent) 5px,
+        color-mix(in srgb, var(--success) 10%, transparent) 5px,
+        color-mix(in srgb, var(--success) 10%, transparent) 10px
+      );
+    }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased m-0 p-0 min-h-screen transition-colors duration-200">
+  <!-- Pinned Sticky Top Summary Card -->
+  <header class="sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--card)]/95 backdrop-blur-md">
+    <div class="mx-auto max-w-6xl px-4 py-3.5 sm:px-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--card-border)]">
+        <div class="flex items-center gap-3">
+          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--success)] text-[var(--primary-foreground)] font-bold text-sm tracking-tight">
+            SG
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-base sm:text-lg font-bold tracking-tight text-[var(--foreground)]">
+                Singapore Tax Maximiser
+              </h1>
+              <span class="rounded-md bg-[var(--secondary)] px-2 py-0.5 text-xs font-semibold text-[var(--secondary-foreground)]">
+                YA 2026
+              </span>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] hidden sm:block">
+              2026 IRAS Progressive Resident Rates · Strict S$80,000 Relief Cap
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            id="btn-theme-toggle"
+            type="button"
+            aria-label="Toggle dark mode"
+            class="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--card)] px-2.5 py-2 text-xs font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)] cursor-pointer"
+          >
+            <span id="theme-toggle-icon" aria-hidden="true"></span>
+            <span id="theme-toggle-label">Dark</span>
+          </button>
+          <button
+            id="btn-reset-topups"
+            type="button"
+            class="hidden items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)] cursor-pointer"
+          >
+            Reset Top-Ups
+          </button>
+          <button
+            id="btn-auto-optimize-top"
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-lg bg-[var(--success)] px-3.5 py-2 text-xs sm:text-sm font-semibold text-[var(--primary-foreground)] shadow-sm transition hover:opacity-90 active:scale-[0.99] cursor-pointer"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+            Auto-Optimize Top-Ups
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Pinned KPI Readouts -->
+      <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-12 lg:gap-4 items-stretch">
+        <div class="lg:col-span-3 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-3.5 py-2.5">
+          <div class="flex items-center justify-between gap-1">
+            <span class="text-xs font-medium text-[var(--muted-foreground)]">Total Tax Payable</span>
+            <span id="kpi-marginal-badge" class="rounded bg-[var(--secondary)] px-1.5 py-0.5 text-xs font-semibold text-[var(--secondary-foreground)] tabular-nums">15%</span>
+          </div>
+          <div id="kpi-tax-payable" class="mt-0.5 text-xl sm:text-2xl font-bold tracking-tight text-[var(--foreground)] tabular-nums">S$0</div>
+          <div id="kpi-chargeable-sub" class="text-xs text-[var(--muted-foreground)] tabular-nums">Chargeable: S$0</div>
+        </div>
+
+        <div class="lg:col-span-3 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-3.5 py-2.5">
+          <div class="flex items-center justify-between gap-1">
+            <span class="text-xs font-medium text-[var(--muted-foreground)]">Total Tax Saved</span>
+            <span id="kpi-topup-saved-badge" class="hidden rounded px-1.5 py-0.5 text-xs font-semibold text-[var(--success)] tabular-nums" style="background: color-mix(in srgb, var(--success) 15%, transparent);">+S$0</span>
+          </div>
+          <div id="kpi-tax-saved" class="mt-0.5 text-xl sm:text-2xl font-bold tracking-tight text-[var(--success)] tabular-nums">S$0</div>
+          <div id="kpi-tax-saved-sub" class="text-xs text-[var(--muted-foreground)] tabular-nums">vs gross tax</div>
+        </div>
+
+        <div class="lg:col-span-2 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-3.5 py-2.5">
+          <span class="text-xs font-medium text-[var(--muted-foreground)]">Effective Rate</span>
+          <div id="kpi-effective-rate" class="mt-0.5 text-xl sm:text-2xl font-bold tracking-tight text-[var(--foreground)] tabular-nums">0.00%</div>
+          <div id="kpi-effective-sub" class="text-xs text-[var(--muted-foreground)] tabular-nums">of gross income</div>
+        </div>
+
+        <div id="kpi-cap-box" class="col-span-2 lg:col-span-4 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-3.5 py-2.5">
+          <div class="flex items-center justify-between gap-2 text-xs">
+            <span class="font-semibold text-[var(--foreground)]">S$80,000 Relief Cap</span>
+            <span id="kpi-relief-cap-readout" class="font-semibold tabular-nums text-[var(--foreground)]">S$0 / S$80,000</span>
+          </div>
+          <div class="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-[var(--secondary)] flex" role="progressbar" aria-label="Relief cap utilization">
+            <div id="cap-bar-base" class="h-full bg-[var(--primary)] transition-all duration-300" style="width:0%"></div>
+            <div id="cap-bar-topups" class="h-full bg-[var(--success)] transition-all duration-300" style="width:0%"></div>
+          </div>
+          <div class="mt-1.5 flex items-center justify-between text-xs tabular-nums">
+            <div class="flex items-center gap-2.5 text-[var(--muted-foreground)]">
+              <span class="inline-flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-[var(--primary)]"></span><span id="cap-legend-base">Base S$0</span></span>
+              <span class="inline-flex items-center gap-1"><span id="cap-dot-topup" class="h-2 w-2 rounded-full bg-[var(--success)]"></span><span id="cap-legend-topup">Top-Ups S$0</span></span>
+            </div>
+            <span id="cap-status-text" class="font-semibold text-[var(--muted-foreground)]">S$80,000 left</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 items-start">
+      <!-- Left Column: Baseline Inputs + Computation Ledger -->
+      <div class="lg:col-span-5 space-y-6">
+        <section class="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
+          <div class="flex items-center justify-between pb-3.5 border-b border-[var(--card-border)]">
+            <div>
+              <h2 class="text-sm font-bold text-[var(--foreground)]">Baseline Profile &amp; Income</h2>
+              <p class="text-xs text-[var(--muted-foreground)] mt-0.5">2026 earned income and automatic IRAS reliefs</p>
+            </div>
+            <span id="badge-base-reliefs" class="rounded-full bg-[var(--secondary)] px-2.5 py-1 text-xs font-semibold text-[var(--secondary-foreground)] tabular-nums">Base: S$0</span>
+          </div>
+
+          <div class="mt-4 space-y-5">
+            <div>
+              <div class="flex items-center justify-between">
+                <label for="input-annual-income" class="text-xs font-semibold text-[var(--foreground)]">Annual Gross Income (2026)</label>
+                <span id="readout-monthly-income" class="text-xs text-[var(--muted-foreground)] tabular-nums">≈ S$12,500/mo</span>
+              </div>
+              <div class="relative mt-1.5">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-sm font-semibold text-[var(--muted-foreground)]">S$</span>
+                <input
+                  id="input-annual-income"
+                  type="number"
+                  min="0"
+                  max="5000000"
+                  step="1000"
+                  value="150000"
+                  class="w-full rounded-xl border border-[var(--border)] bg-[var(--content)] py-2.5 pl-10 pr-4 text-lg font-bold text-[var(--foreground)] tabular-nums outline-none focus:border-[var(--success)]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <div class="text-xs font-semibold text-[var(--foreground)]">Citizenship &amp; Tax Residency Status</div>
+              <div class="mt-1.5 grid grid-cols-2 gap-2 rounded-xl bg-[var(--content)] p-1 border border-[var(--card-border)]">
+                <button id="btn-citizen-pr" type="button" class="rounded-lg px-3 py-2 text-left transition cursor-pointer">
+                  <div class="text-xs font-semibold">Citizen / PR</div>
+                  <div class="text-xs opacity-75 tabular-nums mt-0.5">SRS S$15,300 · CPF</div>
+                </button>
+                <button id="btn-foreigner" type="button" class="rounded-lg px-3 py-2 text-left transition cursor-pointer">
+                  <div class="text-xs font-semibold">Foreigner</div>
+                  <div class="text-xs opacity-75 tabular-nums mt-0.5">SRS S$35,700 · No CPF</div>
+                </button>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] p-3.5">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <div class="text-xs font-semibold text-[var(--foreground)]">Employee CPF Relief</div>
+                  <p id="cpf-subtitle" class="text-xs text-[var(--muted-foreground)] mt-0.5">
+                    Auto: 20% up to S$8,000/mo OW ceiling (max S$19,200/yr)
+                  </p>
+                </div>
+                <div id="readout-employee-cpf" class="text-sm font-bold text-[var(--foreground)] tabular-nums shrink-0">S$19,200</div>
+              </div>
+              <div id="cpf-controls" class="mt-2.5 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-[var(--card-border)]">
+                <label class="inline-flex items-center gap-2 text-xs text-[var(--muted-foreground)] cursor-pointer select-none">
+                  <input id="toggle-cpf-aw" type="checkbox" class="h-3.5 w-3.5 accent-[var(--success)]" />
+                  Include Bonus AW cap (max S$20,400)
+                </label>
+                <div id="cpf-override-wrap" class="flex items-center gap-1.5"></div>
+              </div>
+            </div>
+
+            <div id="nsman-card" class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] p-3.5">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <div class="text-xs font-semibold text-[var(--foreground)]">NSman Relief</div>
+                  <div id="nsman-subtitle" class="text-xs text-[var(--muted-foreground)] mt-0.5">Claiming S$3,000 relief</div>
+                </div>
+                <button
+                  id="toggle-nsman"
+                  type="button"
+                  role="switch"
+                  aria-checked="true"
+                  class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors cursor-pointer"
+                >
+                  <span id="toggle-nsman-knob" class="inline-block h-4 w-4 transform rounded-full bg-[var(--card)] shadow transition-transform"></span>
+                </button>
+              </div>
+              <div id="nsman-tiers" class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-2.5 border-t border-[var(--card-border)]"></div>
+            </div>
+
+            <div class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] overflow-hidden">
+              <button id="btn-toggle-advanced" type="button" class="flex w-full items-center justify-between px-3.5 py-2.5 text-left cursor-pointer">
+                <div>
+                  <span class="text-xs font-semibold text-[var(--foreground)]">Other Personal Reliefs</span>
+                  <span id="advanced-summary" class="ml-2 text-xs text-[var(--muted-foreground)] tabular-nums">EIR S$1,000</span>
+                </div>
+                <span id="advanced-chevron" class="text-xs text-[var(--muted-foreground)]">▲</span>
+              </button>
+              <div id="advanced-panel" class="border-t border-[var(--card-border)] p-3.5 space-y-3.5">
+                <div>
+                  <div class="text-xs font-semibold text-[var(--muted-foreground)] mb-1.5">Age Bracket (Auto Earned Income Relief)</div>
+                  <div id="age-buttons" class="grid grid-cols-3 gap-1.5"></div>
+                </div>
+
+                <div class="pt-2 border-t border-[var(--card-border)]">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-[var(--muted-foreground)]">Select YA 2026 Reliefs (Auto-Calculated)</span>
+                    <span id="other-reliefs-subtotal" class="text-xs font-bold text-[var(--success)] tabular-nums"></span>
+                  </div>
+                  <div id="other-reliefs-picker" class="space-y-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- YA 2026 Computation Summary Ledger -->
+        <section class="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
+          <div class="flex items-center justify-between pb-3 border-b border-[var(--card-border)]">
+            <div>
+              <h2 class="text-sm font-bold text-[var(--foreground)]">YA 2026 IRAS Computation Ledger</h2>
+              <p class="text-xs text-[var(--muted-foreground)]">Line-by-line relief cap &amp; chargeable income</p>
+            </div>
+          </div>
+          <dl id="ledger-rows" class="mt-3 space-y-2 text-xs tabular-nums"></dl>
+        </section>
+      </div>
+
+      <!-- Right Column: Interactive Top-Up Sliders + Bracket Exposure Bar Chart -->
+      <div class="lg:col-span-7 space-y-6">
+        <section class="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-3.5 border-b border-[var(--card-border)]">
+            <div>
+              <h2 class="text-sm font-bold text-[var(--foreground)]">Tax-Deductible Top-Up Sliders</h2>
+              <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Live Instant Tax ROI % on every dollar contributed</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                id="btn-step-further"
+                type="button"
+                class="hidden items-center gap-1 rounded-lg border border-[var(--success)] px-3 py-1.5 text-xs font-semibold text-[var(--success)] transition hover:opacity-85 cursor-pointer"
+              ></button>
+              <button
+                id="btn-auto-optimize-card"
+                type="button"
+                class="inline-flex items-center gap-1.5 rounded-lg bg-[var(--primary)] px-3.5 py-1.5 text-xs font-semibold text-[var(--primary-foreground)] transition hover:opacity-90 cursor-pointer"
+              >
+                Auto-Optimize Top-Ups
+              </button>
+            </div>
+          </div>
+
+          <div id="optimize-banner" class="hidden mt-4 rounded-xl border px-3.5 py-2.5 text-xs leading-relaxed"></div>
+          <div id="cap-warning-banner" class="hidden mt-4 rounded-xl border border-[var(--error)] px-3.5 py-2.5 text-xs leading-relaxed text-[var(--error)]" style="background: color-mix(in srgb, var(--error) 10%, transparent);"></div>
+
+          <div class="mt-4 space-y-3.5">
+            <div id="card-srs" class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] p-4">
+              <div class="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <label for="slider-srs" class="text-sm font-semibold text-[var(--foreground)]">SRS Top-Up</label>
+                    <span id="roi-srs" class="rounded-full px-2.5 py-0.5 text-xs font-bold tabular-nums"></span>
+                  </div>
+                  <p id="sub-srs" class="text-xs text-[var(--muted-foreground)] mt-0.5"></p>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <div class="relative">
+                    <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5 text-xs font-semibold text-[var(--muted-foreground)]">S$</span>
+                    <input id="num-srs" type="number" min="0" step="100" value="" placeholder="0" class="w-28 rounded-lg border border-[var(--border)] bg-[var(--card)] py-1.5 pl-7 pr-2 text-right text-sm font-bold text-[var(--foreground)] tabular-nums outline-none focus:border-[var(--success)]" />
+                  </div>
+                  <button id="max-srs" type="button" class="rounded-lg border border-[var(--border)] bg-[var(--card)] px-2 py-1.5 text-xs font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer">Max</button>
+                </div>
+              </div>
+              <div class="mt-3.5">
+                <input id="slider-srs" type="range" min="0" max="15300" step="100" value="0" class="tax-slider" />
+                <div class="mt-1.5 flex items-center justify-between text-xs text-[var(--muted-foreground)] tabular-nums">
+                  <span>S$0</span>
+                  <div id="meta-srs" class="flex items-center gap-3"></div>
+                  <span id="cap-label-srs">Cap: S$15,300</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="card-rstu-self" class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] p-4">
+              <div class="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <label for="slider-rstu-self" class="text-sm font-semibold text-[var(--foreground)]">CPF RSTU (Self)</label>
+                    <span id="roi-rstu-self" class="rounded-full px-2.5 py-0.5 text-xs font-bold tabular-nums"></span>
+                  </div>
+                  <p id="sub-rstu-self" class="text-xs text-[var(--muted-foreground)] mt-0.5"></p>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <div class="relative">
+                    <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5 text-xs font-semibold text-[var(--muted-foreground)]">S$</span>
+                    <input id="num-rstu-self" type="number" min="0" max="8000" step="100" value="" placeholder="0" class="w-28 rounded-lg border border-[var(--border)] bg-[var(--card)] py-1.5 pl-7 pr-2 text-right text-sm font-bold text-[var(--foreground)] tabular-nums outline-none focus:border-[var(--success)]" />
+                  </div>
+                  <button id="max-rstu-self" type="button" class="rounded-lg border border-[var(--border)] bg-[var(--card)] px-2 py-1.5 text-xs font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer">Max</button>
+                </div>
+              </div>
+              <div class="mt-3.5">
+                <input id="slider-rstu-self" type="range" min="0" max="8000" step="100" value="0" class="tax-slider" />
+                <div class="mt-1.5 flex items-center justify-between text-xs text-[var(--muted-foreground)] tabular-nums">
+                  <span>S$0</span>
+                  <div id="meta-rstu-self" class="flex items-center gap-3"></div>
+                  <span id="cap-label-rstu-self">Cap: S$8,000</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="card-rstu-loved" class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] p-4">
+              <div class="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <label for="slider-rstu-loved" class="text-sm font-semibold text-[var(--foreground)]">CPF RSTU (Loved Ones)</label>
+                    <span id="roi-rstu-loved" class="rounded-full px-2.5 py-0.5 text-xs font-bold tabular-nums"></span>
+                  </div>
+                  <p id="sub-rstu-loved" class="text-xs text-[var(--muted-foreground)] mt-0.5"></p>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <div class="relative">
+                    <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5 text-xs font-semibold text-[var(--muted-foreground)]">S$</span>
+                    <input id="num-rstu-loved" type="number" min="0" max="8000" step="100" value="" placeholder="0" class="w-28 rounded-lg border border-[var(--border)] bg-[var(--card)] py-1.5 pl-7 pr-2 text-right text-sm font-bold text-[var(--foreground)] tabular-nums outline-none focus:border-[var(--success)]" />
+                  </div>
+                  <button id="max-rstu-loved" type="button" class="rounded-lg border border-[var(--border)] bg-[var(--card)] px-2 py-1.5 text-xs font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer">Max</button>
+                </div>
+              </div>
+              <div class="mt-3.5">
+                <input id="slider-rstu-loved" type="range" min="0" max="8000" step="100" value="0" class="tax-slider" />
+                <div class="mt-1.5 flex items-center justify-between text-xs text-[var(--muted-foreground)] tabular-nums">
+                  <span>S$0</span>
+                  <div id="meta-rstu-loved" class="flex items-center gap-3"></div>
+                  <span>Cap: S$8,000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Marginal Tax Bracket Exposure Bar Chart -->
+        <section class="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3.5 border-b border-[var(--card-border)]">
+            <div>
+              <h2 class="text-sm font-bold text-[var(--foreground)]">Marginal Tax Bracket Exposure</h2>
+              <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Income remaining in your highest IRAS bracket &amp; progressive breakdown</p>
+            </div>
+            <span id="badge-bracket-drop" class="hidden rounded-full px-2.5 py-1 text-xs font-semibold text-[var(--success)]" style="background: color-mix(in srgb, var(--success) 15%, transparent);"></span>
+          </div>
+
+          <div class="mt-4 rounded-xl border border-[var(--card-border)] bg-[var(--content)] p-4">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <div>
+                <div class="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">Current Highest Marginal Bracket</div>
+                <div class="mt-0.5 flex items-baseline gap-2">
+                  <span id="spotlight-rate" class="text-xl font-bold text-[var(--foreground)] tabular-nums">15%</span>
+                  <span id="spotlight-range" class="text-xs text-[var(--muted-foreground)]">($120,001 – $160,000)</span>
+                </div>
+              </div>
+              <div class="text-right">
+                <div id="spotlight-rem-label" class="text-xs text-[var(--muted-foreground)]">Income remaining in this bracket</div>
+                <div id="spotlight-rem-val" class="text-lg font-bold tabular-nums text-[var(--warning)]">S$6,800</div>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <div class="h-6 w-full overflow-hidden rounded-lg bg-[var(--secondary)] flex">
+                <div id="spotlight-bar-rem" class="h-full transition-all duration-300 flex items-center justify-end pr-2 text-xs font-bold text-[var(--primary-foreground)] tabular-nums"></div>
+                <div id="spotlight-bar-shielded" class="h-full bg-shielded-stripes transition-all duration-300 flex items-center justify-center text-xs font-bold text-[var(--success)] tabular-nums"></div>
+              </div>
+              <div class="mt-1.5 flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--muted-foreground)] tabular-nums">
+                <span id="spotlight-floor">S$120,000 floor</span>
+                <span id="spotlight-cta" class="font-semibold text-[var(--foreground)]"></span>
+                <span id="spotlight-ceiling">S$160,000 ceiling</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">Progressive Bracket Breakdown (YA 2026)</h3>
+              <div class="flex items-center gap-3 text-xs text-[var(--muted-foreground)]">
+                <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-sm bg-[var(--warning)]"></span>Top Bracket</span>
+                <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-sm bg-[var(--primary)]"></span>Lower Brackets</span>
+                <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-sm bg-shielded-stripes border border-[var(--success)]"></span>Shielded</span>
+              </div>
+            </div>
+            <div id="bracket-bars-list" class="space-y-2"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer class="mt-8 pt-4 border-t border-[var(--card-border)] flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--muted-foreground)]">
+      <span>IRAS Progressive Resident Tax Rates (YA 2026) · 2026 CPF OW Ceiling S$8,000/mo · S$80,000 Relief Cap</span>
+      <span>For personal tax planning estimates only</span>
+    </footer>
+  </main>
+
+  <script>
+    const BRACKETS = [
+      { index: 0, label: 'First $20,000', shortLabel: '$0 – $20k', min: 0, max: 20000, rate: 0, baseTax: 0 },
+      { index: 1, label: '$20,001 – $30,000', shortLabel: '$20k – $30k', min: 20000, max: 30000, rate: 0.02, baseTax: 0 },
+      { index: 2, label: '$30,001 – $40,000', shortLabel: '$30k – $40k', min: 30000, max: 40000, rate: 0.035, baseTax: 200 },
+      { index: 3, label: '$40,001 – $80,000', shortLabel: '$40k – $80k', min: 40000, max: 80000, rate: 0.07, baseTax: 550 },
+      { index: 4, label: '$80,001 – $120,000', shortLabel: '$80k – $120k', min: 80000, max: 120000, rate: 0.115, baseTax: 3350 },
+      { index: 5, label: '$120,001 – $160,000', shortLabel: '$120k – $160k', min: 120000, max: 160000, rate: 0.15, baseTax: 7950 },
+      { index: 6, label: '$160,001 – $200,000', shortLabel: '$160k – $200k', min: 160000, max: 200000, rate: 0.18, baseTax: 13950 },
+      { index: 7, label: '$200,001 – $240,000', shortLabel: '$200k – $240k', min: 200000, max: 240000, rate: 0.19, baseTax: 21150 },
+      { index: 8, label: '$240,001 – $280,000', shortLabel: '$240k – $280k', min: 240000, max: 280000, rate: 0.195, baseTax: 28750 },
+      { index: 9, label: '$280,001 – $320,000', shortLabel: '$280k – $320k', min: 280000, max: 320000, rate: 0.20, baseTax: 36550 },
+      { index: 10, label: '$320,001 – $500,000', shortLabel: '$320k – $500k', min: 320000, max: 500000, rate: 0.22, baseTax: 44550 },
+      { index: 11, label: '$500,001 – $1,000,000', shortLabel: '$500k – $1M', min: 500000, max: 1000000, rate: 0.23, baseTax: 84150 },
+      { index: 12, label: 'Above $1,000,000', shortLabel: '>$1M', min: 1000000, max: Infinity, rate: 0.24, baseTax: 199150 },
+    ];
+
+    const RELIEF_CAP = 80000;
+    const NSMAN_TIERS = [
+      { value: 1500, label: 'S$1,500', desc: 'Non-active' },
+      { value: 3000, label: 'S$3,000', desc: 'Active ICT' },
+      { value: 5000, label: 'S$5,000', desc: 'Key Appt' },
+      { value: 750, label: 'S$750', desc: 'Wife/Parent' },
+    ];
+    const AGE_GROUPS = [
+      { value: 'under_55', label: 'Under 55', relief: 'S$1,000' },
+      { value: '55_to_59', label: '55 – 59', relief: 'S$6,000' },
+      { value: '60_plus', label: '60+', relief: 'S$8,000' },
+    ];
+
+    const state = {
+      annualIncome: 150000,
+      citizenship: 'citizen_pr',
+      includeCpfAwBonusCap: false,
+      customCpfOverride: null,
+      nsmanEnabled: true,
+      nsmanTier: 3000,
+      ageGroup: 'under_55',
+      other: {
+        spouseEnabled: false,
+        spouseDisability: false,
+        qcrEnabled: false,
+        qcrChildren: 1,
+        qcrDisability: false,
+        wmcrEnabled: false,
+        wmcrChildren: 1,
+        wmcrScheme: 'fixed_2024_plus',
+        parentEnabled: false,
+        parentCount: 1,
+        parentStayingWith: true,
+        parentDisability: false,
+        gcrEnabled: false,
+        lifeInsuranceEnabled: false,
+      },
+      srsTopUp: 0,
+      rstuSelf: 0,
+      rstuLovedOnes: 0,
+      showAdvanced: true,
+      optimizeNote: null,
+    };
+
+    const fmtSGD = (v, dec = false) => {
+      const abs = Math.abs(v);
+      return (v < 0 ? '-' : '') + 'S$' + abs.toLocaleString('en-SG', {
+        minimumFractionDigits: dec ? 2 : 0,
+        maximumFractionDigits: dec ? 2 : 0,
+      });
+    };
+    const fmtRate = (pct) => (pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1)) + '%';
+
+    function getHighestBracket(ci) {
+      const val = Math.max(0, ci);
+      if (val <= 20000) return BRACKETS[0];
+      for (let i = BRACKETS.length - 1; i >= 1; i--) {
+        if (val > BRACKETS[i].min) return BRACKETS[i];
+      }
+      return BRACKETS[0];
+    }
+
+    function calcTax(ci) {
+      const val = Math.max(0, ci);
+      if (val <= 20000) return 0;
+      const b = getHighestBracket(val);
+      return Math.round((b.baseTax + (val - b.min) * b.rate) * 100) / 100;
+    }
+
+    function autoCpf(income, cit, includeAw) {
+      if (cit !== 'citizen_pr' || income <= 0) return 0;
+      const ceil = includeAw ? 102000 : 96000;
+      return Math.round(Math.min(income, ceil) * 0.2);
+    }
+
+    function calcOtherReliefs(sel, income, cpf) {
+      const items = [];
+      let selectedCount = 0;
+
+      const spouse = sel.spouseEnabled ? (sel.spouseDisability ? 5500 : 2000) : 0;
+      if (sel.spouseEnabled) {
+        selectedCount++;
+        items.push({ label: sel.spouseDisability ? 'Spouse Relief (Disability)' : 'Spouse Relief', val: spouse });
+      }
+
+      const qcrN = Math.max(1, Math.min(6, Math.round(sel.qcrChildren)));
+      const qcrUnit = sel.qcrDisability ? 7500 : 4000;
+      const qcr = sel.qcrEnabled ? qcrN * qcrUnit : 0;
+      if (sel.qcrEnabled) {
+        selectedCount++;
+        items.push({ label: `${sel.qcrDisability ? 'Child Relief (Disability)' : 'Qualifying Child Relief'} (${qcrN})`, val: qcr });
+      }
+
+      let wmcr = 0;
+      const wmcrN = Math.max(1, Math.min(4, Math.round(sel.wmcrChildren)));
+      if (sel.wmcrEnabled && income > 0) {
+        selectedCount++;
+        let sum = 0;
+        for (let i = 1; i <= wmcrN; i++) {
+          const qcrChild = sel.qcrEnabled && i <= qcrN ? qcrUnit : 0;
+          const cap = Math.max(0, 50000 - qcrChild);
+          const raw = sel.wmcrScheme === 'fixed_2024_plus'
+            ? (i === 1 ? 8000 : i === 2 ? 10000 : 12000)
+            : Math.round(income * (i === 1 ? 0.15 : i === 2 ? 0.20 : 0.25));
+          sum += Math.min(raw, cap);
+        }
+        wmcr = Math.min(sum, income);
+        items.push({
+          label: `Working Mother's Child Relief (${wmcrN}, ${sel.wmcrScheme === 'fixed_2024_plus' ? '2024+ Fixed' : 'Pre-2024 %'})`,
+          val: wmcr,
+        });
+      } else if (sel.wmcrEnabled) {
+        selectedCount++;
+      }
+
+      const pN = Math.max(1, Math.min(2, Math.round(sel.parentCount)));
+      const pUnit = sel.parentStayingWith
+        ? (sel.parentDisability ? 14000 : 9000)
+        : (sel.parentDisability ? 10000 : 5500);
+      const parent = sel.parentEnabled ? pN * pUnit : 0;
+      if (sel.parentEnabled) {
+        selectedCount++;
+        items.push({
+          label: `Parent Relief${sel.parentDisability ? ' (Disability)' : ''} (${pN}, ${sel.parentStayingWith ? 'Staying' : 'Not Staying'})`,
+          val: parent,
+        });
+      }
+
+      const gcr = sel.gcrEnabled ? 3000 : 0;
+      if (sel.gcrEnabled) {
+        selectedCount++;
+        items.push({ label: 'Grandparent Caregiver Relief (GCR)', val: gcr });
+      }
+
+      const lifeCap = Math.max(0, 5000 - cpf);
+      const life = sel.lifeInsuranceEnabled ? lifeCap : 0;
+      if (sel.lifeInsuranceEnabled) {
+        selectedCount++;
+        if (life > 0) items.push({ label: 'Life Insurance Relief', val: life });
+      }
+
+      return {
+        spouse, qcr, wmcr, parent, gcr, life, lifeCap,
+        total: spouse + qcr + wmcr + parent + gcr + life,
+        selectedCount,
+        items,
+      };
+    }
+
+    function shapleySavings(income, baseUncapped, amounts) {
+      const taxAt = (extra) => {
+        const eff = Math.min(RELIEF_CAP, baseUncapped + extra);
+        return calcTax(Math.max(0, income - eff));
+      };
+      const perms = [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
+      const totals = [0, 0, 0];
+      for (const p of perms) {
+        let running = 0, prev = taxAt(0);
+        for (const idx of p) {
+          running += amounts[idx];
+          const next = taxAt(running);
+          totals[idx] += prev - next;
+          prev = next;
+        }
+      }
+      return totals.map((t) => Math.round((t / 6) * 100) / 100);
+    }
+
+    function computeScenario(s) {
+      const income = Math.max(0, Math.round(s.annualIncome));
+      const isCit = s.citizenship === 'citizen_pr';
+      const eirCap = s.ageGroup === '60_plus' ? 8000 : s.ageGroup === '55_to_59' ? 6000 : 1000;
+      const eir = Math.min(income, eirCap);
+      const cpfAuto = autoCpf(income, s.citizenship, s.includeCpfAwBonusCap);
+      const cpf = isCit ? (s.customCpfOverride !== null ? Math.max(0, Math.min(37740, Math.round(s.customCpfOverride))) : cpfAuto) : 0;
+      const nsman = isCit && s.nsmanEnabled ? s.nsmanTier : 0;
+      const otherBd = calcOtherReliefs(s.other, income, cpf);
+      const other = otherBd.total;
+
+      const baseUncapped = eir + cpf + nsman + other;
+      const baseEff = Math.min(RELIEF_CAP, baseUncapped);
+
+      const srsCap = isCit ? 15300 : 35700;
+      const rstuSelfCap = isCit ? 8000 : 0;
+      const rstuLovedCap = 8000;
+
+      const srs = Math.max(0, Math.min(srsCap, Math.round(s.srsTopUp)));
+      const rstuSelf = Math.max(0, Math.min(rstuSelfCap, Math.round(s.rstuSelf)));
+      const rstuLoved = Math.max(0, Math.min(rstuLovedCap, Math.round(s.rstuLovedOnes)));
+      const totalTopUps = srs + rstuSelf + rstuLoved;
+
+      const uncappedTotal = baseUncapped + totalTopUps;
+      const effTotal = Math.min(RELIEF_CAP, uncappedTotal);
+      const excessWasted = Math.max(0, uncappedTotal - RELIEF_CAP);
+      const remCapRoom = Math.max(0, RELIEF_CAP - uncappedTotal);
+
+      const baseCI = Math.max(0, income - baseEff);
+      const ci = Math.max(0, income - effTotal);
+
+      const grossTax = calcTax(income);
+      const baseTax = calcTax(baseCI);
+      const taxPayable = calcTax(ci);
+      const totalSaved = Math.max(0, Math.round((grossTax - taxPayable) * 100) / 100);
+      const topUpSaved = Math.max(0, Math.round((baseTax - taxPayable) * 100) / 100);
+
+      const effRate = income > 0 ? (taxPayable / income) * 100 : 0;
+      const baseEffRate = income > 0 ? (baseTax / income) * 100 : 0;
+
+      const baseTop = getHighestBracket(baseCI);
+      const currTop = getHighestBracket(ci);
+      const nextLower = currTop.index > 0 ? BRACKETS[currTop.index - 1] : null;
+      const remInTop = currTop.index === 0 ? ci : Math.max(0, ci - currTop.min);
+      const topWidth = Number.isFinite(currTop.max) ? currTop.max - currTop.min : Math.max(250000, remInTop * 1.25);
+      const neededToDrop = currTop.index === 0 ? 0 : remInTop;
+
+      const maxAdd = (srsCap - srs) + (rstuSelfCap - rstuSelf) + (rstuLovedCap - rstuLoved);
+      const canDropNext = neededToDrop > 0 && neededToDrop <= remCapRoom && neededToDrop <= maxAdd;
+
+      const [srsSaved, selfSaved, lovedSaved] = shapleySavings(income, baseUncapped, [srs, rstuSelf, rstuLoved]);
+      const nextDollarRoi = uncappedTotal >= RELIEF_CAP || ci <= 20000 ? 0 : getHighestBracket(ci).rate * 100;
+
+      const makeMetrics = (amt, max, enabled, saved) => ({
+        amount: amt, max, enabled, taxSaved: saved,
+        instantRoiPct: amt > 0 ? (saved / amt) * 100 : (enabled ? nextDollarRoi : 0),
+        nextDollarRoiPct: enabled && amt < max ? nextDollarRoi : 0,
+      });
+
+      const highestIdx = Math.max(1, baseTop.index, currTop.index);
+      const bracketRows = [];
+      for (let i = 0; i <= highestIdx; i++) {
+        const b = BRACKETS[i];
+        const width = Number.isFinite(b.max) ? b.max - b.min : Math.max(200000, baseCI - b.min);
+        const baseIn = Math.max(0, Math.min(baseCI, b.max) - b.min);
+        const currIn = Math.max(0, Math.min(ci, b.max) - b.min);
+        const shielded = Math.max(0, baseIn - currIn);
+        bracketRows.push({
+          bracket: b, width, baseIn, currIn, shielded,
+          taxIn: Math.round(currIn * b.rate * 100) / 100,
+          taxSavedIn: Math.round(shielded * b.rate * 100) / 100,
+          isCurrTop: b.index === currTop.index,
+        });
+      }
+
+      return {
+        income, isCit, eir, cpfAuto, cpf, nsman, other, otherBd, baseUncapped, baseEff,
+        srsCap, rstuSelfCap, rstuLovedCap, srs, rstuSelf, rstuLoved, totalTopUps,
+        uncappedTotal, effTotal, excessWasted, remCapRoom,
+        baseCI, ci, grossTax, baseTax, taxPayable, totalSaved, topUpSaved,
+        effRate, baseEffRate, baseTop, currTop, nextLower, remInTop, topWidth, neededToDrop, canDropNext,
+        srsMetrics: makeMetrics(srs, srsCap, true, srsSaved),
+        rstuSelfMetrics: makeMetrics(rstuSelf, rstuSelfCap, isCit, selfSaved),
+        rstuLovedMetrics: makeMetrics(rstuLoved, rstuLovedCap, true, lovedSaved),
+        bracketRows,
+      };
+    }
+
+    function runAutoOptimize(mode = 'next_bracket') {
+      const baseSc = computeScenario({ ...state, srsTopUp: 0, rstuSelf: 0, rstuLovedOnes: 0 });
+      const currSc = computeScenario(state);
+      const refCI = mode === 'step_further' ? currSc.ci : baseSc.baseCI;
+      const refB = getHighestBracket(refCI);
+      const availCap = Math.max(0, RELIEF_CAP - baseSc.baseUncapped);
+      const maxTop = baseSc.rstuSelfCap + baseSc.srsCap + baseSc.rstuLovedCap;
+      const maxEff = Math.min(availCap, maxTop);
+
+      if (refB.index === 0 || refCI <= 20000) {
+        state.srsTopUp = 0; state.rstuSelf = 0; state.rstuLovedOnes = 0;
+        state.optimizeNote = {
+          good: true,
+          text: 'Your chargeable income is already inside the 0% tax-free bracket (S$20,000). No voluntary top-ups needed.',
+        };
+        render();
+        return;
+      }
+
+      const neededFromBase = Math.max(0, baseSc.baseCI - refB.min);
+      const alloc = Math.min(neededFromBase, maxEff);
+      let rem = alloc;
+      const rSelf = Math.min(rem, baseSc.rstuSelfCap); rem -= rSelf;
+      const rSrs = Math.min(rem, baseSc.srsCap); rem -= rSrs;
+      const rLoved = Math.min(rem, baseSc.rstuLovedCap); rem -= rLoved;
+
+      state.rstuSelf = rSelf;
+      state.srsTopUp = rSrs;
+      state.rstuLovedOnes = rLoved;
+
+      const after = computeScenario(state);
+      const dropped = after.currTop.index < baseSc.baseTop.index;
+      const roi = alloc > 0 ? (after.topUpSaved / alloc) * 100 : 0;
+
+      if (availCap === 0) {
+        state.optimizeNote = { good: false, text: 'You have already reached the S$80,000 personal relief cap with baseline reliefs. Additional top-ups yield 0% tax relief.' };
+      } else if (dropped) {
+        state.optimizeNote = {
+          good: true,
+          text: `Allocated ${fmtSGD(alloc)} to drop from the ${fmtRate(baseSc.baseTop.rate * 100)} bracket to ${fmtRate(after.currTop.rate * 100)}, saving ${fmtSGD(after.topUpSaved, after.topUpSaved % 1 !== 0)} (${roi.toFixed(1)}% instant ROI).`,
+        };
+      } else if (neededFromBase > availCap && availCap <= maxTop) {
+        state.optimizeNote = {
+          good: false,
+          text: `Capped at ${fmtSGD(alloc)} to strictly respect the S$80,000 relief cap — saving ${fmtSGD(after.topUpSaved, after.topUpSaved % 1 !== 0)} (${roi.toFixed(1)}% ROI) with zero wasted relief.`,
+        };
+      } else {
+        state.optimizeNote = {
+          good: false,
+          text: `Maxed all allowable top-ups (${fmtSGD(alloc)}) — trimming your ${fmtRate(baseSc.baseTop.rate * 100)} bracket exposure and saving ${fmtSGD(after.topUpSaved, after.topUpSaved % 1 !== 0)} (${roi.toFixed(1)}% ROI).`,
+        };
+      }
+      render();
+    }
+
+    function updateSliderUI(key, val, m, isOverCap, subtitleText) {
+      const slider = document.getElementById(`slider-${key}`);
+      const num = document.getElementById(`num-${key}`);
+      const maxBtn = document.getElementById(`max-${key}`);
+      const roiEl = document.getElementById(`roi-${key}`);
+      const subEl = document.getElementById(`sub-${key}`);
+      const metaEl = document.getElementById(`meta-${key}`);
+      const card = document.getElementById(`card-${key}`);
+
+      slider.max = Math.max(1, m.max);
+      slider.value = val;
+      slider.disabled = !m.enabled;
+      slider.classList.toggle('slider-capped', isOverCap);
+
+      const pct = m.max > 0 ? Math.min(100, (val / m.max) * 100) : 0;
+      const fill = isOverCap ? 'var(--error)' : 'var(--success)';
+      slider.style.background = `linear-gradient(to right, ${fill} 0%, ${fill} ${pct}%, var(--secondary) ${pct}%, var(--secondary) 100%)`;
+
+      if (document.activeElement !== num) num.value = val === 0 ? '' : String(val);
+      num.max = m.max;
+      num.disabled = !m.enabled;
+
+      maxBtn.style.display = m.enabled ? '' : 'none';
+      maxBtn.textContent = val === m.max && m.max > 0 ? 'Clear' : 'Max';
+
+      subEl.textContent = subtitleText;
+      card.style.opacity = m.enabled ? '1' : '0.6';
+
+      roiEl.textContent = val > 0
+        ? `Instant Tax ROI: ${m.instantRoiPct.toFixed(1)}%`
+        : `Instant ROI: ${m.instantRoiPct.toFixed(1)}% / $1`;
+
+      if (!m.enabled) {
+        roiEl.style.background = 'var(--secondary)';
+        roiEl.style.color = 'var(--muted-foreground)';
+      } else if (m.instantRoiPct === 0) {
+        roiEl.style.background = 'color-mix(in srgb, var(--error) 15%, transparent)';
+        roiEl.style.color = 'var(--error)';
+      } else if (val > 0) {
+        roiEl.style.background = 'color-mix(in srgb, var(--success) 16%, transparent)';
+        roiEl.style.color = 'var(--success)';
+      } else {
+        roiEl.style.background = 'var(--secondary)';
+        roiEl.style.color = 'var(--foreground)';
+      }
+
+      let metaHtml = '';
+      if (val > 0) {
+        metaHtml += `<span class="font-semibold text-[var(--success)]">Saves ${fmtSGD(m.taxSaved, m.taxSaved % 1 !== 0)}</span>`;
+      }
+      if (m.enabled && val < m.max) {
+        const cls = m.nextDollarRoiPct === 0 ? 'text-[var(--error)] font-semibold' : '';
+        metaHtml += `<span class="${cls}">Next $1: ${m.nextDollarRoiPct.toFixed(1)}%</span>`;
+      }
+      metaEl.innerHTML = metaHtml;
+    }
+
+    function renderOtherReliefsPicker(sc) {
+      const sel = state.other;
+      const bd = sc.otherBd;
+      const activeBox = (on) => on
+        ? 'border-color: color-mix(in srgb, var(--success) 55%, transparent); background: color-mix(in srgb, var(--success) 8%, var(--card));'
+        : 'border-color: var(--border); background: var(--card);';
+
+      const pillBtn = (attr, active, label) =>
+        `<button ${attr} type="button" class="rounded-md px-2 py-1 text-xs font-semibold cursor-pointer border transition ${
+          active
+            ? 'bg-[var(--success)] text-[var(--primary-foreground)] border-transparent'
+            : 'bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)]'
+        }">${label}</button>`;
+
+      const stepper = (field, val, min, max) => `
+        <div class="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--card)] px-1.5 py-0.5">
+          <button data-step="${field}" data-delta="-1" type="button" ${val <= min ? 'disabled' : ''} class="px-1 text-xs font-bold text-[var(--muted-foreground)] hover:text-[var(--foreground)] disabled:opacity-35 cursor-pointer">−</button>
+          <span class="min-w-4 text-center text-xs font-bold text-[var(--foreground)] tabular-nums">${val}</span>
+          <button data-step="${field}" data-delta="1" type="button" ${val >= max ? 'disabled' : ''} class="px-1 text-xs font-bold text-[var(--muted-foreground)] hover:text-[var(--foreground)] disabled:opacity-35 cursor-pointer">+</button>
+        </div>`;
+
+      document.getElementById('other-reliefs-subtotal').textContent =
+        bd.total > 0 ? `+${fmtSGD(bd.total)}` : '';
+
+      document.getElementById('other-reliefs-picker').innerHTML = `
+        <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.spouseEnabled)}">
+          <div class="flex items-center justify-between gap-2">
+            <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
+              <input data-other-check="spouseEnabled" type="checkbox" ${sel.spouseEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <span>Spouse Relief</span>
+            </label>
+            <span class="text-xs font-bold tabular-nums ${sel.spouseEnabled ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+              ${sel.spouseEnabled ? '+' + fmtSGD(bd.spouse) : 'S$2,000'}
+            </span>
+          </div>
+          ${sel.spouseEnabled ? `
+            <div class="mt-2 pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--muted-foreground)]">
+              <span>Spouse income ≤ S$8,000</span>
+              <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                <input data-other-check="spouseDisability" type="checkbox" ${sel.spouseDisability ? 'checked' : ''} class="h-3 w-3 accent-[var(--success)]" />
+                Disability (S$5,500)
+              </label>
+            </div>` : ''}
+        </div>
+
+        <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.qcrEnabled)}">
+          <div class="flex items-center justify-between gap-2">
+            <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
+              <input data-other-check="qcrEnabled" type="checkbox" ${sel.qcrEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <span>Qualifying Child Relief (QCR)</span>
+            </label>
+            <span class="text-xs font-bold tabular-nums ${sel.qcrEnabled ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+              ${sel.qcrEnabled ? '+' + fmtSGD(bd.qcr) : 'S$4,000 / child'}
+            </span>
+          </div>
+          ${sel.qcrEnabled ? `
+            <div class="mt-2 pt-2 border-t border-[var(--card-border)] flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--muted-foreground)]">
+              <div class="flex items-center gap-2"><span>Children:</span>${stepper('qcrChildren', sel.qcrChildren, 1, 6)}</div>
+              <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                <input data-other-check="qcrDisability" type="checkbox" ${sel.qcrDisability ? 'checked' : ''} class="h-3 w-3 accent-[var(--success)]" />
+                Disability (S$7,500)
+              </label>
+            </div>` : ''}
+        </div>
+
+        <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.wmcrEnabled)}">
+          <div class="flex items-center justify-between gap-2">
+            <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
+              <input data-other-check="wmcrEnabled" type="checkbox" ${sel.wmcrEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <span>Working Mother's Child Relief</span>
+            </label>
+            <span class="text-xs font-bold tabular-nums ${sel.wmcrEnabled ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+              ${sel.wmcrEnabled ? '+' + fmtSGD(bd.wmcr) : 'From S$8,000'}
+            </span>
+          </div>
+          ${sel.wmcrEnabled ? `
+            <div class="mt-2 pt-2 border-t border-[var(--card-border)] space-y-2 text-xs text-[var(--muted-foreground)]">
+              <div class="flex items-center justify-between gap-2">
+                <span>SG Citizen children:</span>${stepper('wmcrChildren', sel.wmcrChildren, 1, 4)}
+              </div>
+              <div class="grid grid-cols-2 gap-1.5">
+                ${pillBtn('data-wmcr-scheme="fixed_2024_plus"', sel.wmcrScheme === 'fixed_2024_plus', 'Born 2024+ ($8k/$10k/$12k)')}
+                ${pillBtn('data-wmcr-scheme="pct_pre_2024"', sel.wmcrScheme === 'pct_pre_2024', 'Pre-2024 (15%/20%/25%)')}
+              </div>
+            </div>` : ''}
+        </div>
+
+        <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.parentEnabled)}">
+          <div class="flex items-center justify-between gap-2">
+            <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
+              <input data-other-check="parentEnabled" type="checkbox" ${sel.parentEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <span>Parent Relief</span>
+            </label>
+            <span class="text-xs font-bold tabular-nums ${sel.parentEnabled ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+              ${sel.parentEnabled ? '+' + fmtSGD(bd.parent) : 'Up to S$9,000'}
+            </span>
+          </div>
+          ${sel.parentEnabled ? `
+            <div class="mt-2 pt-2 border-t border-[var(--card-border)] space-y-2 text-xs text-[var(--muted-foreground)]">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2"><span>Parents (max 2):</span>${stepper('parentCount', sel.parentCount, 1, 2)}</div>
+                <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                  <input data-other-check="parentDisability" type="checkbox" ${sel.parentDisability ? 'checked' : ''} class="h-3 w-3 accent-[var(--success)]" />
+                  Disability
+                </label>
+              </div>
+              <div class="grid grid-cols-2 gap-1.5">
+                ${pillBtn('data-parent-stay="true"', sel.parentStayingWith, `Staying (${sel.parentDisability ? 'S$14k' : 'S$9k'})`)}
+                ${pillBtn('data-parent-stay="false"', !sel.parentStayingWith, `Not staying (${sel.parentDisability ? 'S$10k' : 'S$5.5k'})`)}
+              </div>
+            </div>` : ''}
+        </div>
+
+        <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.gcrEnabled)}">
+          <div class="flex items-center justify-between gap-2">
+            <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
+              <input data-other-check="gcrEnabled" type="checkbox" ${sel.gcrEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <span>Grandparent Caregiver Relief (GCR)</span>
+            </label>
+            <span class="text-xs font-bold tabular-nums ${sel.gcrEnabled ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+              ${sel.gcrEnabled ? '+S$3,000' : 'S$3,000'}
+            </span>
+          </div>
+        </div>
+
+        <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.lifeInsuranceEnabled && bd.lifeCap > 0)}; opacity:${bd.lifeCap === 0 ? '0.6' : '1'};">
+          <div class="flex items-center justify-between gap-2">
+            <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
+              <input data-other-check="lifeInsuranceEnabled" type="checkbox" ${bd.lifeCap === 0 ? 'disabled' : ''} ${sel.lifeInsuranceEnabled && bd.lifeCap > 0 ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <span>Life Insurance Relief</span>
+            </label>
+            <span class="text-xs font-bold tabular-nums ${sel.lifeInsuranceEnabled && bd.lifeCap > 0 ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+              ${bd.lifeCap === 0 ? 'Ineligible (CPF ≥ S$5k)' : sel.lifeInsuranceEnabled ? '+' + fmtSGD(bd.life) : 'Up to ' + fmtSGD(bd.lifeCap)}
+            </span>
+          </div>
+        </div>
+      `;
+    }
+
+    function render() {
+      const sc = computeScenario(state);
+      const isOverCap = sc.excessWasted > 0;
+
+      document.getElementById('kpi-tax-payable').textContent = fmtSGD(sc.taxPayable);
+      document.getElementById('kpi-marginal-badge').textContent = `${fmtRate(sc.currTop.rate * 100)} marginal`;
+      document.getElementById('kpi-chargeable-sub').textContent = `Chargeable: ${fmtSGD(sc.ci)}`;
+
+      document.getElementById('kpi-tax-saved').textContent = fmtSGD(sc.totalSaved);
+      const topUpBadge = document.getElementById('kpi-topup-saved-badge');
+      if (sc.topUpSaved > 0) {
+        topUpBadge.textContent = `+${fmtSGD(sc.topUpSaved)} top-ups`;
+        topUpBadge.classList.remove('hidden');
+        document.getElementById('kpi-tax-saved-sub').textContent = `Down from ${fmtSGD(sc.baseTax)} pre-top-up`;
+      } else {
+        topUpBadge.classList.add('hidden');
+        document.getElementById('kpi-tax-saved-sub').textContent = `vs ${fmtSGD(sc.grossTax)} without reliefs`;
+      }
+
+      document.getElementById('kpi-effective-rate').textContent = `${sc.effRate.toFixed(2)}%`;
+      const effDelta = sc.baseEffRate - sc.effRate;
+      const effSub = document.getElementById('kpi-effective-sub');
+      if (effDelta > 0.005) {
+        effSub.innerHTML = `<span class="text-[var(--success)] font-semibold">-${effDelta.toFixed(2)}% saved</span>`;
+      } else {
+        effSub.textContent = 'of gross income';
+      }
+
+      const resetBtn = document.getElementById('btn-reset-topups');
+      resetBtn.classList.toggle('hidden', sc.totalTopUps === 0);
+      resetBtn.classList.toggle('inline-flex', sc.totalTopUps > 0);
+
+      const basePct = Math.min(100, (sc.baseEff / RELIEF_CAP) * 100);
+      const effTopUp = Math.max(0, sc.effTotal - sc.baseEff);
+      const topUpPct = Math.min(100 - basePct, (effTopUp / RELIEF_CAP) * 100);
+
+      document.getElementById('kpi-relief-cap-readout').textContent = `${fmtSGD(sc.effTotal)} / S$80,000`;
+      document.getElementById('kpi-relief-cap-readout').style.color = isOverCap ? 'var(--error)' : 'var(--foreground)';
+      document.getElementById('cap-bar-base').style.width = `${basePct}%`;
+      const topBar = document.getElementById('cap-bar-topups');
+      topBar.style.width = `${topUpPct}%`;
+      topBar.style.background = isOverCap ? 'var(--error)' : 'var(--success)';
+      document.getElementById('cap-dot-topup').style.background = isOverCap ? 'var(--error)' : 'var(--success)';
+      document.getElementById('cap-legend-base').textContent = `Base ${fmtSGD(sc.baseEff)}`;
+      document.getElementById('cap-legend-topup').textContent = `Top-Ups ${fmtSGD(sc.totalTopUps)}`;
+
+      const capStatus = document.getElementById('cap-status-text');
+      const capBox = document.getElementById('kpi-cap-box');
+      if (isOverCap) {
+        capStatus.textContent = `${fmtSGD(sc.excessWasted)} excess (0%)`;
+        capStatus.style.color = 'var(--error)';
+        capBox.style.borderColor = 'var(--error)';
+      } else {
+        capStatus.textContent = `${fmtSGD(sc.remCapRoom)} left`;
+        capStatus.style.color = 'var(--muted-foreground)';
+        capBox.style.borderColor = 'var(--card-border)';
+      }
+
+      document.getElementById('badge-base-reliefs').textContent = `Base: ${fmtSGD(sc.baseEff)}`;
+      document.getElementById('readout-monthly-income').textContent = `≈ ${fmtSGD(Math.round(sc.income / 12))}/mo`;
+
+      const citBtn = document.getElementById('btn-citizen-pr');
+      const forBtn = document.getElementById('btn-foreigner');
+      const applySeg = (el, active) => {
+        el.style.background = active ? 'var(--card)' : 'transparent';
+        el.style.color = active ? 'var(--foreground)' : 'var(--muted-foreground)';
+        el.style.boxShadow = active ? '0 1px 3px rgba(0,0,0,0.1)' : 'none';
+      };
+      applySeg(citBtn, sc.isCit);
+      applySeg(forBtn, !sc.isCit);
+
+      document.getElementById('readout-employee-cpf').textContent = fmtSGD(sc.cpf);
+      document.getElementById('cpf-subtitle').textContent = sc.isCit
+        ? (state.includeCpfAwBonusCap ? 'Auto: 20% up to S$102k ceiling (OW + Bonus AW)' : 'Auto: 20% up to S$8,000/mo OW ceiling (max S$19,200/yr)')
+        : 'Not applicable to foreigners on work passes';
+      document.getElementById('cpf-controls').style.display = sc.isCit ? 'flex' : 'none';
+      document.getElementById('toggle-cpf-aw').checked = state.includeCpfAwBonusCap;
+
+      const cpfOvWrap = document.getElementById('cpf-override-wrap');
+      if (state.customCpfOverride === null) {
+        cpfOvWrap.innerHTML = `<button id="btn-edit-cpf" type="button" class="text-xs font-medium text-[var(--link)] underline cursor-pointer">Edit manually</button>`;
+      } else {
+        cpfOvWrap.innerHTML = `<input id="input-custom-cpf" type="number" min="0" max="37740" step="100" value="${state.customCpfOverride}" class="w-24 rounded-md border border-[var(--border)] bg-[var(--card)] px-2 py-1 text-xs font-semibold tabular-nums text-[var(--foreground)]" /><button id="btn-auto-cpf" type="button" class="text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer">Auto</button>`;
+      }
+
+      const nsCard = document.getElementById('nsman-card');
+      const nsBtn = document.getElementById('toggle-nsman');
+      const nsKnob = document.getElementById('toggle-nsman-knob');
+      const nsOn = sc.isCit && state.nsmanEnabled;
+      nsCard.style.opacity = sc.isCit ? '1' : '0.55';
+      nsBtn.disabled = !sc.isCit;
+      nsBtn.setAttribute('aria-checked', String(nsOn));
+      nsBtn.style.background = nsOn ? 'var(--success)' : 'var(--secondary)';
+      nsKnob.style.transform = nsOn ? 'translateX(22px)' : 'translateX(4px)';
+      document.getElementById('nsman-subtitle').textContent = !sc.isCit
+        ? 'Citizens & PRs only'
+        : nsOn ? `Claiming ${fmtSGD(sc.nsman)} relief` : 'Toggle on if eligible NSman / Wife / Parent';
+
+      const nsTiersEl = document.getElementById('nsman-tiers');
+      if (nsOn) {
+        nsTiersEl.classList.remove('hidden');
+        nsTiersEl.innerHTML = NSMAN_TIERS.map((t) => {
+          const sel = state.nsmanTier === t.value;
+          return `<button data-ns-tier="${t.value}" type="button" class="rounded-lg px-2 py-1.5 text-center transition cursor-pointer border ${
+            sel
+              ? 'bg-[var(--success)] text-[var(--primary-foreground)] border-transparent'
+              : 'bg-[var(--card)] text-[var(--foreground)] border-[var(--border)]'
+          }"><div class="text-xs font-bold tabular-nums">${t.label}</div><div class="text-xs opacity-75">${t.desc}</div></button>`;
+        }).join('');
+      } else {
+        nsTiersEl.classList.add('hidden');
+      }
+
+      document.getElementById('advanced-summary').innerHTML =
+        `EIR ${fmtSGD(sc.eir)}` +
+        (sc.otherBd.total > 0 ? ` <span class="text-[var(--success)] font-semibold">+ ${fmtSGD(sc.otherBd.total)} (${sc.otherBd.selectedCount})</span>` : '');
+      document.getElementById('advanced-panel').classList.toggle('hidden', !state.showAdvanced);
+      document.getElementById('advanced-chevron').textContent = state.showAdvanced ? '▲' : '▼';
+      document.getElementById('age-buttons').innerHTML = AGE_GROUPS.map((g) => {
+        const sel = state.ageGroup === g.value;
+        return `<button data-age="${g.value}" type="button" class="rounded-lg border px-2 py-1.5 text-center cursor-pointer ${
+          sel
+            ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-transparent'
+            : 'bg-[var(--card)] text-[var(--foreground)] border-[var(--border)]'
+        }"><div class="text-xs font-semibold">${g.label}</div><div class="text-xs opacity-75 tabular-nums">${g.relief}</div></button>`;
+      }).join('');
+      renderOtherReliefsPicker(sc);
+
+      const stepBtn = document.getElementById('btn-step-further');
+      const alreadyDropped = sc.currTop.index < sc.baseTop.index;
+      if (alreadyDropped && sc.canDropNext && sc.nextLower) {
+        stepBtn.textContent = `Drop to ${fmtRate(sc.nextLower.rate * 100)}`;
+        stepBtn.classList.remove('hidden');
+        stepBtn.classList.add('inline-flex');
+      } else {
+        stepBtn.classList.add('hidden');
+        stepBtn.classList.remove('inline-flex');
+      }
+
+      const optBanner = document.getElementById('optimize-banner');
+      if (state.optimizeNote) {
+        optBanner.textContent = state.optimizeNote.text;
+        optBanner.classList.remove('hidden');
+        optBanner.style.borderColor = state.optimizeNote.good ? 'var(--success)' : 'var(--warning)';
+        optBanner.style.background = state.optimizeNote.good
+          ? 'color-mix(in srgb, var(--success) 12%, transparent)'
+          : 'color-mix(in srgb, var(--warning) 12%, transparent)';
+        optBanner.style.color = 'var(--foreground)';
+      } else {
+        optBanner.classList.add('hidden');
+      }
+
+      const capWarn = document.getElementById('cap-warning-banner');
+      if (isOverCap) {
+        capWarn.innerHTML = `<strong>S$80,000 Relief Cap exceeded by ${fmtSGD(sc.excessWasted)}.</strong> Excess relief earns <strong>0.0%</strong> tax savings. Click <strong>Auto-Optimize Top-Ups</strong> to eliminate wasted contributions.`;
+        capWarn.classList.remove('hidden');
+      } else {
+        capWarn.classList.add('hidden');
+      }
+
+      document.getElementById('cap-label-srs').textContent = `Cap: ${fmtSGD(sc.srsCap)}`;
+      document.getElementById('cap-label-rstu-self').textContent = `Cap: ${fmtSGD(sc.rstuSelfCap)}`;
+
+      updateSliderUI('srs', sc.srs, sc.srsMetrics, isOverCap,
+        sc.isCit ? 'Supplementary Retirement Scheme · Citizen / PR cap S$15,300' : 'Supplementary Retirement Scheme · Foreigner cap S$35,700'
+      );
+      updateSliderUI('rstu-self', sc.rstuSelf, sc.rstuSelfMetrics, isOverCap,
+        sc.isCit ? 'Cash top-up to your own CPF Special / Retirement Account (max S$8,000)' : 'Available only to Singapore Citizens & PRs with CPF accounts'
+      );
+      updateSliderUI('rstu-loved', sc.rstuLoved, sc.rstuLovedMetrics, isOverCap,
+        sc.isCit ? 'Cash top-up to parents, spouse, grandparents, or siblings CPF SA/RA (max S$8,000)' : 'Cash top-up to SC/PR family members CPF SA/RA (max S$8,000)'
+      );
+
+      const dropBadge = document.getElementById('badge-bracket-drop');
+      if (alreadyDropped) {
+        dropBadge.textContent = `Dropped ${fmtRate(sc.baseTop.rate * 100)} → ${fmtRate(sc.currTop.rate * 100)}`;
+        dropBadge.classList.remove('hidden');
+      } else {
+        dropBadge.classList.add('hidden');
+      }
+
+      document.getElementById('spotlight-rate').textContent = fmtRate(sc.currTop.rate * 100);
+      document.getElementById('spotlight-range').textContent = `(${sc.currTop.label})`;
+      document.getElementById('spotlight-rem-label').textContent =
+        sc.currTop.index === 0 ? 'Chargeable income in 0% band' : 'Income remaining in this bracket';
+      const remValEl = document.getElementById('spotlight-rem-val');
+      remValEl.textContent = fmtSGD(sc.remInTop);
+      remValEl.style.color = sc.currTop.index === 0 ? 'var(--success)' : 'var(--warning)';
+
+      const currTopRow = sc.bracketRows.find((r) => r.bracket.index === sc.currTop.index);
+      const shieldedCurr = currTopRow ? currTopRow.shielded : 0;
+      const remPct = sc.topWidth > 0 ? Math.min(100, (sc.remInTop / sc.topWidth) * 100) : 0;
+      const shPct = sc.topWidth > 0 ? Math.min(100 - remPct, (shieldedCurr / sc.topWidth) * 100) : 0;
+
+      const spRemBar = document.getElementById('spotlight-bar-rem');
+      spRemBar.style.width = `${remPct}%`;
+      spRemBar.style.background = sc.currTop.index === 0 ? 'var(--success)' : 'var(--warning)';
+      spRemBar.textContent = remPct > 22 ? fmtSGD(sc.remInTop) : '';
+
+      const spShBar = document.getElementById('spotlight-bar-shielded');
+      spShBar.style.width = `${shPct}%`;
+      spShBar.textContent = shPct > 18 ? `-${fmtSGD(shieldedCurr)}` : '';
+
+      document.getElementById('spotlight-floor').textContent = `${fmtSGD(sc.currTop.min)} floor`;
+      document.getElementById('spotlight-ceiling').textContent = Number.isFinite(sc.currTop.max)
+        ? `${fmtSGD(sc.currTop.max)} ceiling`
+        : 'No ceiling';
+      const spCta = document.getElementById('spotlight-cta');
+      if (sc.nextLower && sc.neededToDrop > 0) {
+        spCta.textContent = `Need ${fmtSGD(sc.neededToDrop)} relief to drop to ${fmtRate(sc.nextLower.rate * 100)}`;
+        spCta.style.color = 'var(--foreground)';
+      } else {
+        spCta.textContent = '0% Tax-Free Bracket — Maximum Efficiency';
+        spCta.style.color = 'var(--success)';
+      }
+
+      const maxBarVal = Math.max(40000, ...sc.bracketRows.map((r) => Math.max(r.baseIn, r.width)));
+      document.getElementById('bracket-bars-list').innerHTML = sc.bracketRows.slice().reverse().map((r) => {
+        const capPct = Math.max(15, Math.min(100, (r.width / maxBarVal) * 100));
+        const fillPct = r.width > 0 ? Math.min(100, (r.currIn / r.width) * 100) : 0;
+        const shieldPct = r.width > 0 ? Math.min(100 - fillPct, (r.shielded / r.width) * 100) : 0;
+        const eliminated = r.currIn === 0 && r.shielded > 0;
+
+        const rowBg = r.isCurrTop
+          ? 'background: color-mix(in srgb, var(--warning) 10%, transparent); border-color: color-mix(in srgb, var(--warning) 40%, transparent);'
+          : eliminated
+            ? 'background: color-mix(in srgb, var(--success) 8%, transparent); border-color: color-mix(in srgb, var(--success) 30%, transparent);'
+            : 'border-color: transparent;';
+
+        const pillStyle = r.isCurrTop
+          ? 'background: var(--warning); color: var(--primary-foreground);'
+          : eliminated || r.bracket.rate === 0
+            ? 'background: color-mix(in srgb, var(--success) 16%, transparent); color: var(--success);'
+            : 'background: var(--secondary); color: var(--secondary-foreground);';
+
+        const fillColor = r.isCurrTop
+          ? (r.bracket.rate === 0 ? 'var(--success)' : 'var(--warning)')
+          : (r.bracket.rate === 0 ? 'var(--success)' : 'var(--primary)');
+
+        const rightCol = eliminated
+          ? `<div class="text-xs font-semibold text-[var(--success)]">Eliminated<div class="text-xs opacity-85">-${fmtSGD(r.taxSavedIn)}</div></div>`
+          : `<div class="text-xs font-semibold text-[var(--foreground)]">${fmtSGD(r.currIn)}<div class="text-xs text-[var(--muted-foreground)]">Tax ${fmtSGD(r.taxIn)}${r.taxSavedIn > 0 ? ` <span class="text-[var(--success)] font-semibold">(-${fmtSGD(r.taxSavedIn)})</span>` : ''}</div></div>`;
+
+        return `
+          <div class="grid grid-cols-12 items-center gap-2 rounded-lg border px-2.5 py-1.5" style="${rowBg}">
+            <div class="col-span-4 sm:col-span-3 flex items-center gap-2 min-w-0">
+              <span class="w-11 shrink-0 rounded-md px-1.5 py-0.5 text-center text-xs font-bold tabular-nums ${eliminated ? 'line-through' : ''}" style="${pillStyle}">${fmtRate(r.bracket.rate * 100)}</span>
+              <span class="text-xs text-[var(--muted-foreground)] truncate tabular-nums">${r.bracket.shortLabel}</span>
+            </div>
+            <div class="col-span-5 sm:col-span-6">
+              <div class="h-5 rounded-md bg-[var(--secondary)] overflow-hidden flex" style="width:${capPct}%">
+                ${fillPct > 0 ? `<div class="h-full transition-all duration-300" style="width:${fillPct}%; background:${fillColor};"></div>` : ''}
+                ${shieldPct > 0 ? `<div class="h-full bg-shielded-stripes transition-all duration-300" style="width:${shieldPct}%; border-left: 1px solid var(--success);"></div>` : ''}
+              </div>
+            </div>
+            <div class="col-span-3 text-right tabular-nums">${rightCol}</div>
+          </div>`;
+      }).join('');
+
+      const items = [
+        { label: 'Earned Income Relief (Auto)', val: sc.eir },
+        { label: 'Employee CPF Relief', val: sc.cpf },
+        { label: 'NSman Relief', val: sc.nsman },
+        ...sc.otherBd.items,
+        { label: 'SRS Contribution Relief', val: sc.srs, topUp: true },
+        { label: 'CPF RSTU Relief (Self)', val: sc.rstuSelf, topUp: true },
+        { label: 'CPF RSTU Relief (Loved Ones)', val: sc.rstuLoved, topUp: true },
+      ].filter((x) => x.val > 0);
+
+      document.getElementById('ledger-rows').innerHTML = `
+        <div class="flex justify-between font-semibold text-[var(--foreground)] pb-2 border-b border-[var(--card-border)]">
+          <dt>Assessable Annual Income (2026)</dt><dd>${fmtSGD(sc.income)}</dd>
+        </div>
+        ${items.map((it) => `
+          <div class="flex justify-between pl-2 text-[var(--muted-foreground)]">
+            <dt>${it.label}</dt>
+            <dd class="${it.topUp ? 'font-semibold text-[var(--success)]' : ''}">-${fmtSGD(it.val)}</dd>
+          </div>
+        `).join('')}
+        ${sc.excessWasted > 0 ? `
+          <div class="flex justify-between rounded-lg px-2.5 py-1.5 font-semibold text-[var(--error)]" style="background: color-mix(in srgb, var(--error) 10%, transparent);">
+            <dt>Excess Relief Disallowed (Above S$80k Cap)</dt><dd>+${fmtSGD(sc.excessWasted)}</dd>
+          </div>
+        ` : ''}
+        <div class="flex justify-between pt-2 border-t border-[var(--card-border)] font-semibold text-[var(--foreground)]">
+          <dt>Total Reliefs Allowed (Cap S$80,000)</dt><dd>-${fmtSGD(sc.effTotal)}</dd>
+        </div>
+        <div class="flex justify-between rounded-lg bg-[var(--content)] px-3 py-2 font-bold text-[var(--foreground)]">
+          <dt>Chargeable Income</dt><dd>${fmtSGD(sc.ci)}</dd>
+        </div>
+        <div class="flex justify-between pt-2 border-t border-[var(--card-border)] text-[var(--muted-foreground)]">
+          <dt>Gross Tax Without Reliefs</dt><dd class="line-through">${fmtSGD(sc.grossTax)}</dd>
+        </div>
+        <div class="flex justify-between font-bold text-sm text-[var(--foreground)] pt-1">
+          <dt>Net IRAS Tax Payable (YA 2026)</dt><dd>${fmtSGD(sc.taxPayable)}</dd>
+        </div>`;
+    }
+
+    document.getElementById('input-annual-income').addEventListener('input', (e) => {
+      const n = Number(e.target.value);
+      state.annualIncome = Number.isFinite(n) ? Math.max(0, n) : 0;
+      state.optimizeNote = null;
+      render();
+    });
+
+    document.getElementById('btn-citizen-pr').addEventListener('click', () => {
+      state.citizenship = 'citizen_pr';
+      state.srsTopUp = Math.min(state.srsTopUp, 15300);
+      state.optimizeNote = null;
+      render();
+    });
+
+    document.getElementById('btn-foreigner').addEventListener('click', () => {
+      state.citizenship = 'foreigner';
+      state.rstuSelf = 0;
+      state.nsmanEnabled = false;
+      state.customCpfOverride = null;
+      state.optimizeNote = null;
+      render();
+    });
+
+    document.getElementById('toggle-cpf-aw').addEventListener('change', (e) => {
+      state.includeCpfAwBonusCap = e.target.checked;
+      state.customCpfOverride = null;
+      state.optimizeNote = null;
+      render();
+    });
+
+    document.getElementById('cpf-override-wrap').addEventListener('click', (e) => {
+      if (e.target.id === 'btn-edit-cpf') {
+        state.customCpfOverride = autoCpf(state.annualIncome, state.citizenship, state.includeCpfAwBonusCap);
+        state.optimizeNote = null;
+        render();
+      } else if (e.target.id === 'btn-auto-cpf') {
+        state.customCpfOverride = null;
+        state.optimizeNote = null;
+        render();
+      }
+    });
+
+    document.getElementById('cpf-override-wrap').addEventListener('input', (e) => {
+      if (e.target.id === 'input-custom-cpf') {
+        state.customCpfOverride = Math.max(0, Number(e.target.value) || 0);
+        state.optimizeNote = null;
+        render();
+      }
+    });
+
+    document.getElementById('toggle-nsman').addEventListener('click', () => {
+      if (state.citizenship !== 'citizen_pr') return;
+      state.nsmanEnabled = !state.nsmanEnabled;
+      state.optimizeNote = null;
+      render();
+    });
+
+    document.getElementById('nsman-tiers').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-ns-tier]');
+      if (!btn) return;
+      state.nsmanTier = Number(btn.dataset.nsTier);
+      state.optimizeNote = null;
+      render();
+    });
+
+    document.getElementById('btn-toggle-advanced').addEventListener('click', () => {
+      state.showAdvanced = !state.showAdvanced;
+      render();
+    });
+
+    document.getElementById('age-buttons').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-age]');
+      if (!btn) return;
+      state.ageGroup = btn.dataset.age;
+      state.optimizeNote = null;
+      render();
+    });
+
+    const otherPicker = document.getElementById('other-reliefs-picker');
+    otherPicker.addEventListener('change', (e) => {
+      const field = e.target.dataset.otherCheck;
+      if (!field) return;
+      state.other[field] = e.target.checked;
+      state.optimizeNote = null;
+      render();
+    });
+    otherPicker.addEventListener('click', (e) => {
+      const stepBtn = e.target.closest('[data-step]');
+      if (stepBtn) {
+        const f = stepBtn.dataset.step;
+        const d = Number(stepBtn.dataset.delta);
+        const limits = { qcrChildren: [1, 6], wmcrChildren: [1, 4], parentCount: [1, 2] };
+        const [min, max] = limits[f] || [1, 4];
+        state.other[f] = Math.max(min, Math.min(max, state.other[f] + d));
+        state.optimizeNote = null;
+        render();
+        return;
+      }
+      const wmcrBtn = e.target.closest('[data-wmcr-scheme]');
+      if (wmcrBtn) {
+        state.other.wmcrScheme = wmcrBtn.dataset.wmcrScheme;
+        state.optimizeNote = null;
+        render();
+        return;
+      }
+      const stayBtn = e.target.closest('[data-parent-stay]');
+      if (stayBtn) {
+        state.other.parentStayingWith = stayBtn.dataset.parentStay === 'true';
+        state.optimizeNote = null;
+        render();
+      }
+    });
+
+    const bindTopUp = (key, field, getCap) => {
+      document.getElementById(`slider-${key}`).addEventListener('input', (e) => {
+        state[field] = Number(e.target.value);
+        state.optimizeNote = null;
+        render();
+      });
+      document.getElementById(`num-${key}`).addEventListener('input', (e) => {
+        const cap = getCap();
+        const n = Number(e.target.value);
+        state[field] = Number.isFinite(n) ? Math.max(0, Math.min(cap, Math.round(n))) : 0;
+        state.optimizeNote = null;
+        render();
+      });
+      document.getElementById(`max-${key}`).addEventListener('click', () => {
+        const cap = getCap();
+        state[field] = state[field] === cap ? 0 : cap;
+        state.optimizeNote = null;
+        render();
+      });
+    };
+
+    bindTopUp('srs', 'srsTopUp', () => (state.citizenship === 'citizen_pr' ? 15300 : 35700));
+    bindTopUp('rstu-self', 'rstuSelf', () => (state.citizenship === 'citizen_pr' ? 8000 : 0));
+    bindTopUp('rstu-loved', 'rstuLovedOnes', () => 8000);
+
+    document.getElementById('btn-auto-optimize-top').addEventListener('click', () => runAutoOptimize('next_bracket'));
+    document.getElementById('btn-auto-optimize-card').addEventListener('click', () => runAutoOptimize('next_bracket'));
+    document.getElementById('btn-step-further').addEventListener('click', () => runAutoOptimize('step_further'));
+    document.getElementById('btn-reset-topups').addEventListener('click', () => {
+      state.srsTopUp = 0; state.rstuSelf = 0; state.rstuLovedOnes = 0;
+      state.optimizeNote = null;
+      render();
+    });
+
+    // Persisted Dark / Light Mode Toggle
+    const SUN_SVG = '<svg class="h-3.5 w-3.5 text-[var(--warning)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+    const MOON_SVG = '<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+
+    const savedTheme = localStorage.getItem('sg-tax-theme');
+    let isDark = savedTheme ? savedTheme === 'dark' : window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+
+    function applyTheme() {
+      document.body.classList.toggle('theme-dark', isDark);
+      document.getElementById('theme-toggle-icon').innerHTML = isDark ? SUN_SVG : MOON_SVG;
+      document.getElementById('theme-toggle-label').textContent = isDark ? 'Light' : 'Dark';
+      document.getElementById('btn-theme-toggle').setAttribute(
+        'aria-label',
+        isDark ? 'Switch to light mode' : 'Switch to dark mode'
+      );
+      localStorage.setItem('sg-tax-theme', isDark ? 'dark' : 'light');
+    }
+
+    document.getElementById('btn-theme-toggle').addEventListener('click', () => {
+      isDark = !isDark;
+      applyTheme();
+    });
+
+    applyTheme();
+    render();
+  </script>
+</body>
+</html>
