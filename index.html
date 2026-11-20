@@ -29,11 +29,11 @@
       --card-border: #e2e8f0;
       --foreground: #0f172a;
       --muted-foreground: #64748b;
-      --primary: #0f172a;
+      --primary: #0284c7;
       --primary-foreground: #ffffff;
       --secondary: #f1f5f9;
       --secondary-foreground: #334155;
-      --link: #059669;
+      --link: #0284c7;
       --success: #059669;
       --warning: #d97706;
       --error: #e11d48;
@@ -51,7 +51,7 @@
       --primary-foreground: #0b1117;
       --secondary: #1e293b;
       --secondary-foreground: #e2e8f0;
-      --link: #34d399;
+      --link: #38bdf8;
       --success: #10b981;
       --warning: #f59e0b;
       --error: #f43f5e;
@@ -202,7 +202,7 @@
                 <p class="text-xs text-[var(--muted-foreground)] mt-0.5">2026 gross income and reliefs before voluntary top-ups</p>
               </div>
             </div>
-            <span id="badge-base-reliefs" class="shrink-0 rounded-full bg-[var(--secondary)] px-2.5 py-1 text-xs font-semibold text-[var(--secondary-foreground)] tabular-nums" title="Total automatic and family reliefs before SRS/CPF top-ups">Existing Reliefs: S$0</span>
+            <span id="badge-base-reliefs" class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold text-[var(--primary)] tabular-nums" style="background: color-mix(in srgb, var(--primary) 12%, transparent);" title="Total automatic and family reliefs before SRS/CPF top-ups">Existing Reliefs: S$0</span>
           </div>
 
           <div class="mt-4 space-y-5">
@@ -221,7 +221,7 @@
                   max="5000000"
                   step="1000"
                   value="150000"
-                  class="w-full rounded-xl border border-[var(--border)] bg-[var(--content)] py-2.5 pl-10 pr-4 text-lg font-bold text-[var(--foreground)] tabular-nums outline-none focus:border-[var(--success)]"
+                  class="w-full rounded-xl border border-[var(--border)] bg-[var(--content)] py-2.5 pl-10 pr-4 text-lg font-bold text-[var(--foreground)] tabular-nums outline-none focus:border-[var(--primary)]"
                 />
               </div>
             </div>
@@ -254,7 +254,7 @@
               </div>
               <div id="cpf-controls" class="mt-2.5 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-[var(--card-border)]">
                 <label class="inline-flex items-center gap-2 text-xs text-[var(--muted-foreground)] cursor-pointer select-none">
-                  <input id="toggle-cpf-aw" type="checkbox" class="h-3.5 w-3.5 accent-[var(--success)]" />
+                  <input id="toggle-cpf-aw" type="checkbox" class="h-3.5 w-3.5 accent-[var(--primary)]" />
                   Include bonus CPF (up to S$20,400/yr)
                 </label>
                 <div id="cpf-override-wrap" class="flex items-center gap-1.5"></div>
@@ -299,7 +299,7 @@
                 <div class="pt-2 border-t border-[var(--card-border)]">
                   <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-semibold text-[var(--muted-foreground)]">Select Applicable YA 2026 Reliefs</span>
-                    <span id="other-reliefs-subtotal" class="text-xs font-bold text-[var(--success)] tabular-nums"></span>
+                    <span id="other-reliefs-subtotal" class="text-xs font-bold text-[var(--primary)] tabular-nums"></span>
                   </div>
                   <div id="other-reliefs-picker" class="space-y-2"></div>
                 </div>
@@ -326,7 +326,7 @@
         <section class="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
           <div class="flex flex-wrap items-start justify-between gap-3 pb-3.5 border-b border-[var(--card-border)]">
             <div class="flex items-start gap-2.5">
-              <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--success)] text-xs font-bold text-[var(--primary-foreground)]">2</span>
+              <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-xs font-bold text-[var(--primary-foreground)]">2</span>
               <div>
                 <h2 class="text-sm font-bold text-[var(--foreground)]">Optimise with Voluntary Top-Ups</h2>
                 <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Drag SRS &amp; CPF sliders to see live Instant Tax ROI on every dollar</p>
@@ -341,7 +341,7 @@
               <button
                 id="btn-auto-optimize-card"
                 type="button"
-                class="inline-flex items-center gap-1.5 rounded-lg bg-[var(--primary)] px-3 py-1.5 text-xs font-semibold text-[var(--primary-foreground)] transition hover:opacity-90 cursor-pointer tabular-nums"
+                class="inline-flex items-center gap-1.5 rounded-lg bg-[var(--success)] px-3 py-1.5 text-xs font-semibold text-[var(--primary-foreground)] transition hover:opacity-90 cursor-pointer tabular-nums"
               >
                 Auto-Optimize Top-Ups
               </button>
@@ -890,13 +890,13 @@
       const sel = state.other;
       const bd = sc.otherBd;
       const activeBox = (on) => on
-        ? 'border-color: color-mix(in srgb, var(--success) 55%, transparent); background: color-mix(in srgb, var(--success) 8%, var(--card));'
+        ? 'border-color: color-mix(in srgb, var(--primary) 55%, transparent); background: color-mix(in srgb, var(--primary) 8%, var(--card));'
         : 'border-color: var(--border); background: var(--card);';
 
       const pillBtn = (attr, active, label) =>
         `<button ${attr} type="button" class="rounded-md px-2 py-1 text-xs font-semibold cursor-pointer border transition ${
           active
-            ? 'bg-[var(--success)] text-[var(--primary-foreground)] border-transparent'
+            ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-transparent'
             : 'bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)]'
         }">${label}</button>`;
 
@@ -915,10 +915,10 @@
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.spouseEnabled)}">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
-              <input data-other-check="spouseEnabled" type="checkbox" ${sel.spouseEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <input data-other-check="spouseEnabled" type="checkbox" ${sel.spouseEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--primary)]" />
               <span>Spouse Relief</span>
             </label>
-            <span class="text-xs font-bold tabular-nums ${sel.spouseEnabled ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+            <span class="text-xs font-bold tabular-nums ${sel.spouseEnabled ? 'text-[var(--primary)]' : 'text-[var(--muted-foreground)]'}">
               ${sel.spouseEnabled ? '+' + fmtSGD(bd.spouse) : 'S$2,000'}
             </span>
           </div>
@@ -926,7 +926,7 @@
             <div class="mt-2 pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--muted-foreground)]">
               <span>Spouse income ≤ S$8,000</span>
               <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
-                <input data-other-check="spouseDisability" type="checkbox" ${sel.spouseDisability ? 'checked' : ''} class="h-3 w-3 accent-[var(--success)]" />
+                <input data-other-check="spouseDisability" type="checkbox" ${sel.spouseDisability ? 'checked' : ''} class="h-3 w-3 accent-[var(--primary)]" />
                 Disability (S$5,500)
               </label>
             </div>` : ''}
@@ -936,10 +936,10 @@
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.qcrEnabled)}">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
-              <input data-other-check="qcrEnabled" type="checkbox" ${sel.qcrEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <input data-other-check="qcrEnabled" type="checkbox" ${sel.qcrEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--primary)]" />
               <span>Qualifying Child Relief (QCR)</span>
             </label>
-            <span class="text-xs font-bold tabular-nums ${sel.qcrEnabled ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+            <span class="text-xs font-bold tabular-nums ${sel.qcrEnabled ? 'text-[var(--primary)]' : 'text-[var(--muted-foreground)]'}">
               ${sel.qcrEnabled ? '+' + fmtSGD(bd.qcr) : 'S$4,000 / child'}
             </span>
           </div>
@@ -947,7 +947,7 @@
             <div class="mt-2 pt-2 border-t border-[var(--card-border)] flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--muted-foreground)]">
               <div class="flex items-center gap-2"><span>Children:</span>${stepper('qcrChildren', sel.qcrChildren, 1, 6)}</div>
               <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
-                <input data-other-check="qcrDisability" type="checkbox" ${sel.qcrDisability ? 'checked' : ''} class="h-3 w-3 accent-[var(--success)]" />
+                <input data-other-check="qcrDisability" type="checkbox" ${sel.qcrDisability ? 'checked' : ''} class="h-3 w-3 accent-[var(--primary)]" />
                 Disability (S$7,500)
               </label>
             </div>` : ''}
@@ -957,10 +957,10 @@
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.wmcrEnabled)}">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
-              <input data-other-check="wmcrEnabled" type="checkbox" ${sel.wmcrEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <input data-other-check="wmcrEnabled" type="checkbox" ${sel.wmcrEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--primary)]" />
               <span>Working Mother's Child Relief</span>
             </label>
-            <span class="text-xs font-bold tabular-nums ${sel.wmcrEnabled ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+            <span class="text-xs font-bold tabular-nums ${sel.wmcrEnabled ? 'text-[var(--primary)]' : 'text-[var(--muted-foreground)]'}">
               ${sel.wmcrEnabled ? '+' + fmtSGD(bd.wmcr) : 'From S$8,000'}
             </span>
           </div>
@@ -980,10 +980,10 @@
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.parentEnabled)}">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
-              <input data-other-check="parentEnabled" type="checkbox" ${sel.parentEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <input data-other-check="parentEnabled" type="checkbox" ${sel.parentEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--primary)]" />
               <span>Parent Relief</span>
             </label>
-            <span class="text-xs font-bold tabular-nums ${sel.parentEnabled ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+            <span class="text-xs font-bold tabular-nums ${sel.parentEnabled ? 'text-[var(--primary)]' : 'text-[var(--muted-foreground)]'}">
               ${sel.parentEnabled ? '+' + fmtSGD(bd.parent) : 'Up to S$9,000'}
             </span>
           </div>
@@ -992,7 +992,7 @@
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center gap-2"><span>Parents (max 2):</span>${stepper('parentCount', sel.parentCount, 1, 2)}</div>
                 <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
-                  <input data-other-check="parentDisability" type="checkbox" ${sel.parentDisability ? 'checked' : ''} class="h-3 w-3 accent-[var(--success)]" />
+                  <input data-other-check="parentDisability" type="checkbox" ${sel.parentDisability ? 'checked' : ''} class="h-3 w-3 accent-[var(--primary)]" />
                   Disability
                 </label>
               </div>
@@ -1007,10 +1007,10 @@
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.gcrEnabled)}">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
-              <input data-other-check="gcrEnabled" type="checkbox" ${sel.gcrEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <input data-other-check="gcrEnabled" type="checkbox" ${sel.gcrEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--primary)]" />
               <span>Grandparent Caregiver Relief (GCR)</span>
             </label>
-            <span class="text-xs font-bold tabular-nums ${sel.gcrEnabled ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+            <span class="text-xs font-bold tabular-nums ${sel.gcrEnabled ? 'text-[var(--primary)]' : 'text-[var(--muted-foreground)]'}">
               ${sel.gcrEnabled ? '+S$3,000' : 'S$3,000'}
             </span>
           </div>
@@ -1020,10 +1020,10 @@
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.lifeInsuranceEnabled && bd.lifeCap > 0)}; opacity:${bd.lifeCap === 0 ? '0.6' : '1'};">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
-              <input data-other-check="lifeInsuranceEnabled" type="checkbox" ${bd.lifeCap === 0 ? 'disabled' : ''} ${sel.lifeInsuranceEnabled && bd.lifeCap > 0 ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--success)]" />
+              <input data-other-check="lifeInsuranceEnabled" type="checkbox" ${bd.lifeCap === 0 ? 'disabled' : ''} ${sel.lifeInsuranceEnabled && bd.lifeCap > 0 ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--primary)]" />
               <span>Life Insurance Relief</span>
             </label>
-            <span class="text-xs font-bold tabular-nums ${sel.lifeInsuranceEnabled && bd.lifeCap > 0 ? 'text-[var(--success)]' : 'text-[var(--muted-foreground)]'}">
+            <span class="text-xs font-bold tabular-nums ${sel.lifeInsuranceEnabled && bd.lifeCap > 0 ? 'text-[var(--primary)]' : 'text-[var(--muted-foreground)]'}">
               ${bd.lifeCap === 0 ? 'Ineligible (CPF ≥ S$5k)' : sel.lifeInsuranceEnabled ? '+' + fmtSGD(bd.life) : 'Up to ' + fmtSGD(bd.lifeCap)}
             </span>
           </div>
@@ -1099,9 +1099,9 @@
       const citBtn = document.getElementById('btn-citizen-pr');
       const forBtn = document.getElementById('btn-foreigner');
       const applySeg = (el, active) => {
-        el.style.background = active ? 'var(--card)' : 'transparent';
-        el.style.color = active ? 'var(--foreground)' : 'var(--muted-foreground)';
-        el.style.boxShadow = active ? '0 1px 3px rgba(0,0,0,0.1)' : 'none';
+        el.style.background = active ? 'var(--primary)' : 'transparent';
+        el.style.color = active ? 'var(--primary-foreground)' : 'var(--muted-foreground)';
+        el.style.boxShadow = active ? '0 1px 3px rgba(0,0,0,0.12)' : 'none';
       };
       applySeg(citBtn, sc.isCit);
       applySeg(forBtn, !sc.isCit);
@@ -1129,7 +1129,7 @@
       nsCard.style.opacity = sc.isCit ? '1' : '0.55';
       nsBtn.disabled = !sc.isCit;
       nsBtn.setAttribute('aria-checked', String(nsOn));
-      nsBtn.style.background = nsOn ? 'var(--success)' : 'var(--secondary)';
+      nsBtn.style.background = nsOn ? 'var(--primary)' : 'var(--secondary)';
       nsKnob.style.transform = nsOn ? 'translateX(22px)' : 'translateX(4px)';
       document.getElementById('nsman-subtitle').textContent = !sc.isCit
         ? 'Citizens & PRs only'
@@ -1142,7 +1142,7 @@
           const sel = state.nsmanTier === t.value;
           return `<button data-ns-tier="${t.value}" type="button" class="rounded-lg px-2 py-1.5 text-center transition cursor-pointer border ${
             sel
-              ? 'bg-[var(--success)] text-[var(--primary-foreground)] border-transparent'
+              ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-transparent'
               : 'bg-[var(--card)] text-[var(--foreground)] border-[var(--border)]'
           }"><div class="text-xs font-bold tabular-nums">${t.label}</div><div class="text-xs opacity-75">${t.desc}</div></button>`;
         }).join('');
@@ -1153,7 +1153,7 @@
       // Other Personal Reliefs Picker
       document.getElementById('advanced-summary').innerHTML =
         `Earned Income ${fmtSGD(sc.eir)}` +
-        (sc.otherBd.total > 0 ? ` <span class="text-[var(--success)] font-semibold">+ ${fmtSGD(sc.otherBd.total)} (${sc.otherBd.selectedCount})</span>` : '');
+        (sc.otherBd.total > 0 ? ` <span class="text-[var(--primary)] font-semibold">+ ${fmtSGD(sc.otherBd.total)} (${sc.otherBd.selectedCount})</span>` : '');
       document.getElementById('advanced-panel').classList.toggle('hidden', !state.showAdvanced);
       document.getElementById('advanced-chevron').textContent = state.showAdvanced ? '▲' : '▼';
       document.getElementById('age-buttons').innerHTML = AGE_GROUPS.map((g) => {
