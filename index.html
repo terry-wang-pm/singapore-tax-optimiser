@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Singapore Tax Optimiser (YA 2026) — IRAS Tax &amp; SRS Relief Optimiser</title>
   <link
     rel="icon"
@@ -73,12 +73,12 @@
   </style>
 </head>
 <body class="bg-[var(--background)] text-[var(--foreground)] antialiased m-0 p-0 min-h-screen transition-colors duration-200">
-  <!-- Pinned Sticky Top Summary Card -->
-  <header class="sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--card)]/95 backdrop-blur-md">
-    <div class="mx-auto max-w-6xl px-4 py-3.5 sm:px-6">
-      <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--card-border)]">
-        <div class="flex items-center gap-3">
-          <svg class="h-10 w-10 shrink-0" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+  <!-- Responsive Summary Header: scrolls naturally on mobile, sticky on desktop -->
+  <header id="top-summary-header" class="relative lg:sticky lg:top-0 z-30 border-b border-[var(--border)] bg-[var(--card)]/95 backdrop-blur-md">
+    <div class="mx-auto max-w-6xl px-4 py-3 sm:px-6">
+      <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-[var(--card-border)]">
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <svg class="h-8 w-8 sm:h-10 sm:w-10 shrink-0" viewBox="0 0 40 40" fill="none" aria-hidden="true">
             <defs>
               <linearGradient id="sto-bg" x1="4" y1="2" x2="36" y2="38" gradientUnits="userSpaceOnUse">
                 <stop offset="0%" stop-color="#047857"/>
@@ -98,12 +98,12 @@
             <path d="M9.5 18.5C14.5 17.5 19 14.5 24.5 10" stroke="#A7F3D0" stroke-width="2.2" stroke-linecap="round"/>
             <path d="M28.5 6.5L29.6 9.4L32.5 10.5L29.6 11.6L28.5 14.5L27.4 11.6L24.5 10.5L27.4 9.4L28.5 6.5Z" fill="url(#sto-spark)"/>
           </svg>
-          <div>
+          <div class="min-w-0">
             <div class="flex items-center gap-2">
-              <h1 class="text-base sm:text-lg font-bold tracking-tight text-[var(--foreground)]">
+              <h1 class="text-sm sm:text-lg font-bold tracking-tight text-[var(--foreground)] truncate">
                 Singapore Tax Optimiser
               </h1>
-              <span class="rounded-md bg-[var(--secondary)] px-2 py-0.5 text-xs font-semibold text-[var(--secondary-foreground)]">
+              <span class="shrink-0 rounded-md bg-[var(--secondary)] px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-semibold text-[var(--secondary-foreground)]">
                 YA 2026
               </span>
             </div>
@@ -113,7 +113,7 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 shrink-0">
           <button
             id="btn-theme-toggle"
             type="button"
@@ -121,7 +121,7 @@
             class="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--card)] px-2.5 py-2 text-xs font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)] cursor-pointer"
           >
             <span id="theme-toggle-icon" aria-hidden="true"></span>
-            <span id="theme-toggle-label">Dark</span>
+            <span id="theme-toggle-label" class="hidden sm:inline">Dark</span>
           </button>
           <button
             id="btn-reset-topups"
@@ -133,7 +133,7 @@
           <button
             id="btn-auto-optimize-top"
             type="button"
-            class="inline-flex items-center gap-1.5 rounded-lg bg-[var(--success)] px-3.5 py-2 text-xs sm:text-sm font-semibold text-[var(--primary-foreground)] shadow-sm transition hover:opacity-90 active:scale-[0.99] cursor-pointer"
+            class="hidden lg:inline-flex items-center gap-1.5 rounded-lg bg-[var(--success)] px-3.5 py-2 text-sm font-semibold text-[var(--primary-foreground)] shadow-sm transition hover:opacity-90 active:scale-[0.99] cursor-pointer"
           >
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
             Auto-Optimize Top-Ups
@@ -141,33 +141,33 @@
         </div>
       </div>
 
-      <!-- 4 Pinned KPI Readouts -->
-      <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-12 lg:gap-4 items-stretch">
-        <div class="lg:col-span-3 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-3.5 py-2.5">
+      <!-- 4 KPI Readouts: 3-col strip + full-width Cap on mobile, 12-col row on desktop -->
+      <div class="mt-2.5 grid grid-cols-3 gap-2 sm:gap-3 lg:grid-cols-12 lg:gap-4 items-stretch">
+        <div class="lg:col-span-3 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-2.5 py-2 sm:px-3.5 sm:py-2.5">
           <div class="flex items-center justify-between gap-1">
-            <span class="text-xs font-medium text-[var(--muted-foreground)]">Total Tax Payable</span>
-            <span id="kpi-marginal-badge" class="rounded bg-[var(--secondary)] px-1.5 py-0.5 text-xs font-semibold text-[var(--secondary-foreground)] tabular-nums">15%</span>
+            <span class="text-[10px] sm:text-xs font-medium text-[var(--muted-foreground)] truncate"><span class="hidden sm:inline">Total </span>Tax Payable</span>
+            <span id="kpi-marginal-badge" class="hidden sm:inline-block rounded bg-[var(--secondary)] px-1.5 py-0.5 text-xs font-semibold text-[var(--secondary-foreground)] tabular-nums shrink-0">15%</span>
           </div>
-          <div id="kpi-tax-payable" class="mt-0.5 text-xl sm:text-2xl font-bold tracking-tight text-[var(--foreground)] tabular-nums">S$0</div>
-          <div id="kpi-chargeable-sub" class="text-xs text-[var(--muted-foreground)] tabular-nums">Chargeable: S$0</div>
+          <div id="kpi-tax-payable" class="mt-0.5 text-base sm:text-xl lg:text-2xl font-bold tracking-tight text-[var(--foreground)] tabular-nums truncate">S$0</div>
+          <div id="kpi-chargeable-sub" class="text-[10px] sm:text-xs text-[var(--muted-foreground)] tabular-nums truncate">Chargeable: S$0</div>
         </div>
 
-        <div class="lg:col-span-3 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-3.5 py-2.5">
+        <div class="lg:col-span-3 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-2.5 py-2 sm:px-3.5 sm:py-2.5">
           <div class="flex items-center justify-between gap-1">
-            <span class="text-xs font-medium text-[var(--muted-foreground)]">Total Tax Saved</span>
-            <span id="kpi-topup-saved-badge" class="hidden rounded px-1.5 py-0.5 text-xs font-semibold text-[var(--success)] tabular-nums" style="background: color-mix(in srgb, var(--success) 15%, transparent);">+S$0</span>
+            <span class="text-[10px] sm:text-xs font-medium text-[var(--muted-foreground)] truncate"><span class="hidden sm:inline">Total </span>Tax Saved</span>
+            <span id="kpi-topup-saved-badge" class="hidden rounded px-1.5 py-0.5 text-xs font-semibold text-[var(--success)] tabular-nums shrink-0" style="background: color-mix(in srgb, var(--success) 15%, transparent);">+S$0</span>
           </div>
-          <div id="kpi-tax-saved" class="mt-0.5 text-xl sm:text-2xl font-bold tracking-tight text-[var(--success)] tabular-nums">S$0</div>
-          <div id="kpi-tax-saved-sub" class="text-xs text-[var(--muted-foreground)] tabular-nums">vs gross tax</div>
+          <div id="kpi-tax-saved" class="mt-0.5 text-base sm:text-xl lg:text-2xl font-bold tracking-tight text-[var(--success)] tabular-nums truncate">S$0</div>
+          <div id="kpi-tax-saved-sub" class="text-[10px] sm:text-xs text-[var(--muted-foreground)] tabular-nums truncate">vs gross tax</div>
         </div>
 
-        <div class="lg:col-span-2 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-3.5 py-2.5">
-          <span class="text-xs font-medium text-[var(--muted-foreground)]">Effective Rate</span>
-          <div id="kpi-effective-rate" class="mt-0.5 text-xl sm:text-2xl font-bold tracking-tight text-[var(--foreground)] tabular-nums">0.00%</div>
-          <div id="kpi-effective-sub" class="text-xs text-[var(--muted-foreground)] tabular-nums">of gross income</div>
+        <div class="lg:col-span-2 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-2.5 py-2 sm:px-3.5 sm:py-2.5">
+          <span class="text-[10px] sm:text-xs font-medium text-[var(--muted-foreground)] block truncate"><span class="sm:hidden">Eff. Rate</span><span class="hidden sm:inline">Effective Rate</span></span>
+          <div id="kpi-effective-rate" class="mt-0.5 text-base sm:text-xl lg:text-2xl font-bold tracking-tight text-[var(--foreground)] tabular-nums truncate">0.00%</div>
+          <div id="kpi-effective-sub" class="text-[10px] sm:text-xs text-[var(--muted-foreground)] tabular-nums truncate">of income</div>
         </div>
 
-        <div id="kpi-cap-box" class="col-span-2 lg:col-span-4 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-3.5 py-2.5">
+        <div id="kpi-cap-box" class="col-span-3 lg:col-span-4 rounded-xl bg-[var(--content)] border border-[var(--card-border)] px-3 py-2 sm:px-3.5 sm:py-2.5">
           <div class="flex items-center justify-between gap-2 text-xs">
             <span class="font-semibold text-[var(--foreground)]">S$80,000 Relief Cap</span>
             <span id="kpi-relief-cap-readout" class="font-semibold tabular-nums text-[var(--foreground)]">S$0 / S$80,000</span>
@@ -184,6 +184,25 @@
             <span id="cap-status-text" class="font-semibold text-[var(--muted-foreground)]">S$80,000 left</span>
           </div>
         </div>
+      </div>
+
+      <!-- Mobile Action Row (inside scrollable header, hidden on desktop) -->
+      <div class="mt-2.5 flex items-center gap-2 lg:hidden">
+        <button
+          id="btn-auto-optimize-mobile"
+          type="button"
+          class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[var(--success)] px-3.5 py-2 text-xs font-semibold text-[var(--primary-foreground)] shadow-sm transition hover:opacity-90 active:scale-[0.99] cursor-pointer"
+        >
+          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          Auto-Optimize Top-Ups
+        </button>
+        <button
+          id="btn-reset-topups-mobile"
+          type="button"
+          class="hidden items-center gap-1 rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)] cursor-pointer"
+        >
+          Reset
+        </button>
       </div>
     </div>
   </header>
@@ -500,11 +519,47 @@
       </div>
     </div>
 
-    <footer class="mt-8 pt-4 border-t border-[var(--card-border)] flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--muted-foreground)]">
+    <footer class="mt-8 pt-4 pb-20 lg:pb-0 border-t border-[var(--card-border)] flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--muted-foreground)]">
       <span>IRAS Progressive Resident Tax Rates (YA 2026) · 2026 CPF OW Ceiling S$8,000/mo · S$80,000 Relief Cap</span>
       <span>For personal tax planning estimates only</span>
     </footer>
   </main>
+
+  <!-- Mobile Floating Bottom Summary Dock (slides up after scrolling past header) -->
+  <div id="mobile-bottom-dock" aria-hidden="true" class="fixed inset-x-0 bottom-0 z-40 lg:hidden transition-all duration-200 ease-out translate-y-full opacity-0 pointer-events-none">
+    <div class="border-t border-[var(--border)] bg-[var(--card)]/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(15,23,42,0.12)]" style="padding-bottom: env(safe-area-inset-bottom);">
+      <div class="h-[3px] w-full bg-[var(--secondary)] flex overflow-hidden">
+        <div id="dock-bar-base" class="h-full bg-[var(--primary)] transition-all duration-300" style="width:0%"></div>
+        <div id="dock-bar-topups" class="h-full bg-[var(--success)] transition-all duration-300" style="width:0%"></div>
+      </div>
+      <div class="mx-auto max-w-6xl px-3.5 py-2 flex items-center justify-between gap-2">
+        <button id="btn-dock-scroll-top" type="button" aria-label="Scroll to full tax summary" class="flex items-center gap-3 min-w-0 text-left cursor-pointer">
+          <div class="min-w-0">
+            <div id="dock-tax-label" class="text-[10px] font-medium uppercase tracking-wider text-[var(--muted-foreground)] leading-none">Tax (15%)</div>
+            <div id="dock-tax-val" class="mt-0.5 text-sm font-bold text-[var(--foreground)] tabular-nums leading-tight">S$0</div>
+          </div>
+          <div class="h-6 w-px bg-[var(--card-border)] shrink-0"></div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-[var(--success)] leading-none">
+              <span>Saved</span>
+              <span id="dock-cap-badge" class="hidden rounded px-1 text-[9px] font-bold text-[var(--error)] normal-case" style="background: color-mix(in srgb, var(--error) 14%, transparent);">Cap!</span>
+            </div>
+            <div id="dock-saved-val" class="mt-0.5 text-sm font-bold text-[var(--success)] tabular-nums leading-tight">S$0</div>
+          </div>
+        </button>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button id="btn-dock-reset" type="button" aria-label="Reset Top-Ups" title="Reset Top-Ups" class="hidden h-8 w-8 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] cursor-pointer">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+          <button id="btn-dock-optimize" type="button" class="inline-flex items-center gap-1.5 rounded-lg bg-[var(--success)] px-3 py-2 text-xs font-semibold text-[var(--primary-foreground)] shadow-sm transition hover:opacity-90 active:scale-[0.98] cursor-pointer">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+            Optimize
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     const BRACKETS = [
@@ -1077,31 +1132,37 @@
       // Top KPIs
       document.getElementById('kpi-tax-payable').textContent = fmtSGD(sc.taxPayable);
       document.getElementById('kpi-marginal-badge').textContent = `${fmtRate(sc.currTop.rate * 100)} top rate`;
-      document.getElementById('kpi-chargeable-sub').textContent = `Chargeable income: ${fmtSGD(sc.ci)}`;
+      document.getElementById('kpi-chargeable-sub').innerHTML =
+        `<span class="sm:hidden">${fmtRate(sc.currTop.rate * 100)} top bracket</span><span class="hidden sm:inline">Chargeable income: ${fmtSGD(sc.ci)}</span>`;
 
       document.getElementById('kpi-tax-saved').textContent = fmtSGD(sc.totalSaved);
       const topUpBadge = document.getElementById('kpi-topup-saved-badge');
       if (sc.topUpSaved > 0) {
         topUpBadge.textContent = `+${fmtSGD(sc.topUpSaved)} top-ups`;
-        topUpBadge.classList.remove('hidden');
-        document.getElementById('kpi-tax-saved-sub').textContent = `Saves ${fmtSGD(sc.topUpSaved)} extra from top-ups`;
+        topUpBadge.classList.add('sm:inline-block');
+        document.getElementById('kpi-tax-saved-sub').innerHTML =
+          `<span class="sm:hidden">+${fmtSGD(sc.topUpSaved)} top-ups</span><span class="hidden sm:inline">Saves ${fmtSGD(sc.topUpSaved)} extra from top-ups</span>`;
       } else {
-        topUpBadge.classList.add('hidden');
-        document.getElementById('kpi-tax-saved-sub').textContent = `vs ${fmtSGD(sc.grossTax)} with no reliefs`;
+        topUpBadge.classList.remove('sm:inline-block');
+        document.getElementById('kpi-tax-saved-sub').innerHTML =
+          `<span class="sm:hidden">vs gross tax</span><span class="hidden sm:inline">vs ${fmtSGD(sc.grossTax)} with no reliefs</span>`;
       }
 
       document.getElementById('kpi-effective-rate').textContent = `${sc.effRate.toFixed(2)}%`;
       const effDelta = sc.baseEffRate - sc.effRate;
       const effSub = document.getElementById('kpi-effective-sub');
       if (effDelta > 0.005) {
-        effSub.innerHTML = `<span class="text-[var(--success)] font-semibold">-${effDelta.toFixed(2)}% via top-ups</span>`;
+        effSub.innerHTML = `<span class="text-[var(--success)] font-semibold">-${effDelta.toFixed(2)}%<span class="hidden sm:inline"> via top-ups</span></span>`;
       } else {
-        effSub.textContent = 'of annual income';
+        effSub.textContent = 'of income';
       }
 
       const resetBtn = document.getElementById('btn-reset-topups');
-      resetBtn.classList.toggle('hidden', sc.totalTopUps === 0);
-      resetBtn.classList.toggle('inline-flex', sc.totalTopUps > 0);
+      resetBtn.classList.toggle('hidden', true);
+      resetBtn.classList.toggle('lg:inline-flex', sc.totalTopUps > 0);
+      const resetMobBtn = document.getElementById('btn-reset-topups-mobile');
+      resetMobBtn.classList.toggle('hidden', sc.totalTopUps === 0);
+      resetMobBtn.classList.toggle('inline-flex', sc.totalTopUps > 0);
 
       // $80k Cap Progress Bar
       const basePct = Math.min(100, (sc.baseEff / RELIEF_CAP) * 100);
@@ -1121,7 +1182,7 @@
       const capStatus = document.getElementById('cap-status-text');
       const capBox = document.getElementById('kpi-cap-box');
       if (isOverCap) {
-        capStatus.textContent = `${fmtSGD(sc.excessWasted)} excess (0%)`;
+        capStatus.textContent = `${fmtSGD(sc.excessWasted)} excess`;
         capStatus.style.color = 'var(--error)';
         capBox.style.borderColor = 'var(--error)';
       } else {
@@ -1129,6 +1190,19 @@
         capStatus.style.color = 'var(--muted-foreground)';
         capBox.style.borderColor = 'var(--card-border)';
       }
+
+      // Sync Mobile Floating Bottom Summary Dock
+      document.getElementById('dock-tax-label').textContent = `Tax (${fmtRate(sc.currTop.rate * 100)})`;
+      document.getElementById('dock-tax-val').textContent = fmtSGD(sc.taxPayable);
+      document.getElementById('dock-saved-val').textContent = fmtSGD(sc.totalSaved);
+      document.getElementById('dock-cap-badge').classList.toggle('hidden', !isOverCap);
+      document.getElementById('dock-bar-base').style.width = `${basePct}%`;
+      const dockTopBar = document.getElementById('dock-bar-topups');
+      dockTopBar.style.width = `${topUpPct}%`;
+      dockTopBar.style.background = isOverCap ? 'var(--error)' : 'var(--success)';
+      const dockResetBtn = document.getElementById('btn-dock-reset');
+      dockResetBtn.classList.toggle('hidden', sc.totalTopUps === 0);
+      dockResetBtn.classList.toggle('inline-flex', sc.totalTopUps > 0);
 
       // Step 1 Inputs
       document.getElementById('badge-base-reliefs').textContent = `Existing Reliefs: ${fmtSGD(sc.baseEff)}`;
@@ -1542,14 +1616,40 @@
     bindTopUp('rstu-self', 'rstuSelf', () => (state.citizenship === 'citizen_pr' ? 8000 : 0));
     bindTopUp('rstu-loved', 'rstuLovedOnes', () => 8000);
 
-    document.getElementById('btn-auto-optimize-top').addEventListener('click', () => runAutoOptimize('next_bracket'));
-    document.getElementById('btn-auto-optimize-card').addEventListener('click', () => runAutoOptimize('next_bracket'));
-    document.getElementById('btn-step-further').addEventListener('click', () => runAutoOptimize('step_further'));
-    document.getElementById('btn-reset-topups').addEventListener('click', () => {
+    const resetAllTopUps = () => {
       state.srsTopUp = 0; state.rstuSelf = 0; state.rstuLovedOnes = 0;
       state.optimizeNote = null;
       render();
+    };
+    document.getElementById('btn-auto-optimize-top').addEventListener('click', () => runAutoOptimize('next_bracket'));
+    document.getElementById('btn-auto-optimize-mobile').addEventListener('click', () => runAutoOptimize('next_bracket'));
+    document.getElementById('btn-auto-optimize-card').addEventListener('click', () => runAutoOptimize('next_bracket'));
+    document.getElementById('btn-dock-optimize').addEventListener('click', () => runAutoOptimize('next_bracket'));
+    document.getElementById('btn-step-further').addEventListener('click', () => runAutoOptimize('step_further'));
+    document.getElementById('btn-reset-topups').addEventListener('click', resetAllTopUps);
+    document.getElementById('btn-reset-topups-mobile').addEventListener('click', resetAllTopUps);
+    document.getElementById('btn-dock-reset').addEventListener('click', resetAllTopUps);
+    document.getElementById('btn-dock-scroll-top').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    // Show slim mobile bottom dock only after scrolling past the top summary header
+    if (typeof IntersectionObserver !== 'undefined') {
+      const headerEl = document.getElementById('top-summary-header');
+      const dockEl = document.getElementById('mobile-bottom-dock');
+      if (headerEl && dockEl) {
+        const obs = new IntersectionObserver(([entry]) => {
+          const show = !entry.isIntersecting;
+          dockEl.setAttribute('aria-hidden', String(!show));
+          dockEl.classList.toggle('translate-y-0', show);
+          dockEl.classList.toggle('opacity-100', show);
+          dockEl.classList.toggle('translate-y-full', !show);
+          dockEl.classList.toggle('opacity-0', !show);
+          dockEl.classList.toggle('pointer-events-none', !show);
+        }, { threshold: 0 });
+        obs.observe(headerEl);
+      }
+    }
 
     // Persisted Dark / Light Mode Toggle
     const SUN_SVG = '<svg class="h-3.5 w-3.5 text-[var(--warning)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
