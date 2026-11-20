@@ -292,7 +292,13 @@
               </button>
               <div id="advanced-panel" class="border-t border-[var(--card-border)] p-3.5 space-y-3.5">
                 <div>
-                  <div class="text-xs font-semibold text-[var(--muted-foreground)] mb-1.5">Age Bracket (Automatic Earned Income Relief)</div>
+                  <div class="flex items-center justify-between gap-2 mb-1.5">
+                    <span class="text-xs font-semibold text-[var(--muted-foreground)]">Age Bracket (Automatic Earned Income Relief)</span>
+                    <label class="inline-flex items-center gap-1.5 text-xs text-[var(--muted-foreground)] cursor-pointer select-none">
+                      <input id="toggle-eir-disability" type="checkbox" class="h-3 w-3 accent-[var(--primary)]" />
+                      Disability
+                    </label>
+                  </div>
                   <div id="age-buttons" class="grid grid-cols-3 gap-1.5"></div>
                 </div>
 
@@ -525,9 +531,9 @@
       { value: 750, label: 'S$750', desc: 'Wife/Parent' },
     ];
     const AGE_GROUPS = [
-      { value: 'under_55', label: 'Under 55', relief: 'S$1,000' },
-      { value: '55_to_59', label: '55 – 59', relief: 'S$6,000' },
-      { value: '60_plus', label: '60+', relief: 'S$8,000' },
+      { value: 'under_55', label: 'Under 55', relief: 'S$1,000', disabilityRelief: 'S$4,000' },
+      { value: '55_to_59', label: '55 – 59', relief: 'S$6,000', disabilityRelief: 'S$10,000' },
+      { value: '60_plus', label: '60+', relief: 'S$8,000', disabilityRelief: 'S$12,000' },
     ];
 
     const state = {
@@ -538,6 +544,7 @@
       nsmanEnabled: true,
       nsmanTier: 3000,
       ageGroup: 'under_55',
+      earnedIncomeDisability: false,
       other: {
         spouseEnabled: false,
         spouseDisability: false,
@@ -552,6 +559,8 @@
         parentStayingWith: true,
         parentDisability: false,
         gcrEnabled: false,
+        siblingEnabled: false,
+        siblingCount: 1,
         lifeInsuranceEnabled: false,
       },
       srsTopUp: 0,
@@ -651,6 +660,16 @@
         items.push({ label: 'Grandparent Caregiver Relief (GCR)', val: gcr });
       }
 
+      const sibN = Math.max(1, Math.min(4, Math.round(sel.siblingCount)));
+      const sibling = sel.siblingEnabled ? sibN * 5500 : 0;
+      if (sel.siblingEnabled) {
+        selectedCount++;
+        items.push({
+          label: sibN > 1 ? `Sibling Relief (Disability) (${sibN})` : 'Sibling Relief (Disability)',
+          val: sibling,
+        });
+      }
+
       const lifeCap = Math.max(0, 5000 - cpf);
       const life = sel.lifeInsuranceEnabled ? lifeCap : 0;
       if (sel.lifeInsuranceEnabled) {
@@ -659,8 +678,8 @@
       }
 
       return {
-        spouse, qcr, wmcr, parent, gcr, life, lifeCap,
-        total: spouse + qcr + wmcr + parent + gcr + life,
+        spouse, qcr, wmcr, parent, gcr, sibling, life, lifeCap,
+        total: spouse + qcr + wmcr + parent + gcr + sibling + life,
         selectedCount,
         items,
       };
@@ -688,7 +707,9 @@
     function computeScenario(s) {
       const income = Math.max(0, Math.round(s.annualIncome));
       const isCit = s.citizenship === 'citizen_pr';
-      const eirCap = s.ageGroup === '60_plus' ? 8000 : s.ageGroup === '55_to_59' ? 6000 : 1000;
+      const eirCap = s.earnedIncomeDisability
+        ? (s.ageGroup === '60_plus' ? 12000 : s.ageGroup === '55_to_59' ? 10000 : 4000)
+        : (s.ageGroup === '60_plus' ? 8000 : s.ageGroup === '55_to_59' ? 6000 : 1000);
       const eir = Math.min(income, eirCap);
       const cpfAuto = autoCpf(income, s.citizenship, s.includeCpfAwBonusCap);
       const cpf = isCit ? (s.customCpfOverride !== null ? Math.max(0, Math.min(37740, Math.round(s.customCpfOverride))) : cpfAuto) : 0;
@@ -1016,6 +1037,24 @@
           </div>
         </div>
 
+        <!-- Sibling Relief (Disability) -->
+        <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.siblingEnabled)}">
+          <div class="flex items-center justify-between gap-2">
+            <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
+              <input data-other-check="siblingEnabled" type="checkbox" ${sel.siblingEnabled ? 'checked' : ''} class="h-3.5 w-3.5 accent-[var(--primary)]" />
+              <span>Sibling Relief (Disability)</span>
+            </label>
+            <span class="text-xs font-bold tabular-nums ${sel.siblingEnabled ? 'text-[var(--primary)]' : 'text-[var(--muted-foreground)]'}">
+              ${sel.siblingEnabled ? '+' + fmtSGD(bd.sibling) : 'S$5,500 / sibling'}
+            </span>
+          </div>
+          ${sel.siblingEnabled ? `
+            <div class="mt-2 pt-2 border-t border-[var(--card-border)] flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--muted-foreground)]">
+              <div class="flex items-center gap-2"><span>Siblings:</span>${stepper('siblingCount', sel.siblingCount, 1, 4)}</div>
+              <span>Supporting sibling / in-law with disability</span>
+            </div>` : ''}
+        </div>
+
         <!-- Life Insurance Relief -->
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.lifeInsuranceEnabled && bd.lifeCap > 0)}; opacity:${bd.lifeCap === 0 ? '0.6' : '1'};">
           <div class="flex items-center justify-between gap-2">
@@ -1156,13 +1195,14 @@
         (sc.otherBd.total > 0 ? ` <span class="text-[var(--primary)] font-semibold">+ ${fmtSGD(sc.otherBd.total)} (${sc.otherBd.selectedCount})</span>` : '');
       document.getElementById('advanced-panel').classList.toggle('hidden', !state.showAdvanced);
       document.getElementById('advanced-chevron').textContent = state.showAdvanced ? '▲' : '▼';
+      document.getElementById('toggle-eir-disability').checked = state.earnedIncomeDisability;
       document.getElementById('age-buttons').innerHTML = AGE_GROUPS.map((g) => {
         const sel = state.ageGroup === g.value;
         return `<button data-age="${g.value}" type="button" class="rounded-lg border px-2 py-1.5 text-center cursor-pointer ${
           sel
             ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-transparent'
             : 'bg-[var(--card)] text-[var(--foreground)] border-[var(--border)]'
-        }"><div class="text-xs font-semibold">${g.label}</div><div class="text-xs opacity-75 tabular-nums">${g.relief}</div></button>`;
+        }"><div class="text-xs font-semibold">${g.label}</div><div class="text-xs opacity-75 tabular-nums">${state.earnedIncomeDisability ? g.disabilityRelief : g.relief}</div></button>`;
       }).join('');
       renderOtherReliefsPicker(sc);
 
@@ -1317,7 +1357,7 @@
 
       // Ledger (itemizing each selected other relief individually)
       const items = [
-        { label: 'Earned Income Relief (Auto)', val: sc.eir },
+        { label: state.earnedIncomeDisability ? 'Earned Income Relief (Disability)' : 'Earned Income Relief (Auto)', val: sc.eir },
         { label: 'Employee CPF Relief', val: sc.cpf },
         { label: 'NSman Relief', val: sc.nsman },
         ...sc.otherBd.items,
@@ -1426,6 +1466,12 @@
       render();
     });
 
+    document.getElementById('toggle-eir-disability').addEventListener('change', (e) => {
+      state.earnedIncomeDisability = e.target.checked;
+      state.optimizeNote = null;
+      render();
+    });
+
     document.getElementById('age-buttons').addEventListener('click', (e) => {
       const btn = e.target.closest('[data-age]');
       if (!btn) return;
@@ -1448,7 +1494,7 @@
       if (stepBtn) {
         const f = stepBtn.dataset.step;
         const d = Number(stepBtn.dataset.delta);
-        const limits = { qcrChildren: [1, 6], wmcrChildren: [1, 4], parentCount: [1, 2] };
+        const limits = { qcrChildren: [1, 6], wmcrChildren: [1, 4], parentCount: [1, 2], siblingCount: [1, 4] };
         const [min, max] = limits[f] || [1, 4];
         state.other[f] = Math.max(min, Math.min(max, state.other[f] + d));
         state.optimizeNote = null;
