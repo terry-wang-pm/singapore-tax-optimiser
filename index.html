@@ -11,7 +11,7 @@
   />
   <meta
     name="description"
-    content="Calculate 2026 Singapore IRAS progressive resident income tax (YA 2026), enforce the S$80,000 personal relief cap, see instant tax ROI on SRS and CPF RSTU top-ups, and auto-optimize your tax bracket."
+    content="Calculate 2026 Singapore IRAS progressive resident income tax (YA 2026), enforce the S0,000 personal relief cap, see instant tax ROI on SRS and CPF top-ups, and auto-optimize your tax bracket."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -39,7 +39,6 @@
       --error: #e11d48;
       color-scheme: light;
     }
-
     body.theme-dark {
       --background: #0b1117;
       --content: #0f1722;
@@ -58,66 +57,19 @@
       --error: #f43f5e;
       color-scheme: dark;
     }
-
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     }
-
     .tabular-nums { font-variant-numeric: tabular-nums; }
-
-    input[type="range"].tax-slider {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 6px;
-      border-radius: 9999px;
-      outline: none;
-      cursor: pointer;
-    }
-    input[type="range"].tax-slider:disabled {
-      cursor: not-allowed;
-      opacity: 0.45;
-    }
-    input[type="range"].tax-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 9999px;
-      background: var(--card);
-      border: 2.5px solid var(--success);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
-      cursor: pointer;
-      transition: transform 0.12s ease;
-    }
-    input[type="range"].tax-slider::-webkit-slider-thumb:hover {
-      transform: scale(1.1);
-    }
-    input[type="range"].tax-slider::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
-      border-radius: 9999px;
-      background: var(--card);
-      border: 2.5px solid var(--success);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
-      cursor: pointer;
-    }
-    input[type="range"].tax-slider.slider-capped::-webkit-slider-thumb {
-      border-color: var(--error);
-    }
-    input[type="range"].tax-slider.slider-capped::-moz-range-thumb {
-      border-color: var(--error);
-    }
-    .bg-shielded-stripes {
-      background-image: repeating-linear-gradient(
-        -45deg,
-        color-mix(in srgb, var(--success) 32%, transparent),
-        color-mix(in srgb, var(--success) 32%, transparent) 5px,
-        color-mix(in srgb, var(--success) 10%, transparent) 5px,
-        color-mix(in srgb, var(--success) 10%, transparent) 10px
-      );
-    }
+    input[type="range"].tax-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 9999px; outline: none; cursor: pointer; }
+    input[type="range"].tax-slider:disabled { cursor: not-allowed; opacity: 0.45; }
+    input[type="range"].tax-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 9999px; background: var(--card); border: 2.5px solid var(--success); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22); cursor: pointer; transition: transform 0.12s ease; }
+    input[type="range"].tax-slider::-webkit-slider-thumb:hover { transform: scale(1.1); }
+    input[type="range"].tax-slider::-moz-range-thumb { width: 18px; height: 18px; border-radius: 9999px; background: var(--card); border: 2.5px solid var(--success); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22); cursor: pointer; }
+    input[type="range"].tax-slider.slider-capped::-webkit-slider-thumb { border-color: var(--error); }
+    input[type="range"].tax-slider.slider-capped::-moz-range-thumb { border-color: var(--error); }
+    .bg-shielded-stripes { background-image: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--success) 32%, transparent), color-mix(in srgb, var(--success) 32%, transparent) 5px, color-mix(in srgb, var(--success) 10%, transparent) 5px, color-mix(in srgb, var(--success) 10%, transparent) 10px); }
   </style>
 </head>
 <body class="bg-[var(--background)] text-[var(--foreground)] antialiased m-0 p-0 min-h-screen transition-colors duration-200">
@@ -226,7 +178,7 @@
           </div>
           <div class="mt-1.5 flex items-center justify-between text-xs tabular-nums">
             <div class="flex items-center gap-2.5 text-[var(--muted-foreground)]">
-              <span class="inline-flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-[var(--primary)]"></span><span id="cap-legend-base">Base S$0</span></span>
+              <span class="inline-flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-[var(--primary)]"></span><span id="cap-legend-base">Existing S$0</span></span>
               <span class="inline-flex items-center gap-1"><span id="cap-dot-topup" class="h-2 w-2 rounded-full bg-[var(--success)]"></span><span id="cap-legend-topup">Top-Ups S$0</span></span>
             </div>
             <span id="cap-status-text" class="font-semibold text-[var(--muted-foreground)]">S$80,000 left</span>
@@ -239,18 +191,22 @@
   <!-- Main Workspace -->
   <main class="mx-auto max-w-6xl px-4 py-6 sm:px-6">
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 items-start">
-      <!-- Left Column: Baseline Inputs + Computation Ledger -->
+      <!-- Left Column: Step 1 Inputs + Computation Ledger -->
       <div class="lg:col-span-5 space-y-6">
         <section class="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
-          <div class="flex items-center justify-between pb-3.5 border-b border-[var(--card-border)]">
-            <div>
-              <h2 class="text-sm font-bold text-[var(--foreground)]">Baseline Profile &amp; Income</h2>
-              <p class="text-xs text-[var(--muted-foreground)] mt-0.5">2026 earned income and automatic IRAS reliefs</p>
+          <div class="flex items-start justify-between gap-2 pb-3.5 border-b border-[var(--card-border)]">
+            <div class="flex items-start gap-2.5">
+              <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-xs font-bold text-[var(--primary-foreground)]">1</span>
+              <div>
+                <h2 class="text-sm font-bold text-[var(--foreground)]">Your Income &amp; Existing Reliefs</h2>
+                <p class="text-xs text-[var(--muted-foreground)] mt-0.5">2026 gross income and reliefs before voluntary top-ups</p>
+              </div>
             </div>
-            <span id="badge-base-reliefs" class="rounded-full bg-[var(--secondary)] px-2.5 py-1 text-xs font-semibold text-[var(--secondary-foreground)] tabular-nums">Base: S$0</span>
+            <span id="badge-base-reliefs" class="shrink-0 rounded-full bg-[var(--secondary)] px-2.5 py-1 text-xs font-semibold text-[var(--secondary-foreground)] tabular-nums" title="Total automatic and family reliefs before SRS/CPF top-ups">Existing Reliefs: S$0</span>
           </div>
 
           <div class="mt-4 space-y-5">
+            <!-- Annual Gross Income -->
             <div>
               <div class="flex items-center justify-between">
                 <label for="input-annual-income" class="text-xs font-semibold text-[var(--foreground)]">Annual Gross Income (2026)</label>
@@ -270,6 +226,7 @@
               </div>
             </div>
 
+            <!-- Citizenship Status -->
             <div>
               <div class="text-xs font-semibold text-[var(--foreground)]">Citizenship &amp; Tax Residency Status</div>
               <div class="mt-1.5 grid grid-cols-2 gap-2 rounded-xl bg-[var(--content)] p-1 border border-[var(--card-border)]">
@@ -284,12 +241,13 @@
               </div>
             </div>
 
+            <!-- Employee CPF Auto-Calc -->
             <div class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] p-3.5">
               <div class="flex items-start justify-between gap-2">
                 <div>
-                  <div class="text-xs font-semibold text-[var(--foreground)]">Employee CPF Relief</div>
+                  <div class="text-xs font-semibold text-[var(--foreground)]">Employee CPF Relief (Auto)</div>
                   <p id="cpf-subtitle" class="text-xs text-[var(--muted-foreground)] mt-0.5">
-                    Auto: 20% up to S$8,000/mo OW ceiling (max S$19,200/yr)
+                    20% of salary up to S$8,000/mo (max S$19,200/yr)
                   </p>
                 </div>
                 <div id="readout-employee-cpf" class="text-sm font-bold text-[var(--foreground)] tabular-nums shrink-0">S$19,200</div>
@@ -297,12 +255,13 @@
               <div id="cpf-controls" class="mt-2.5 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-[var(--card-border)]">
                 <label class="inline-flex items-center gap-2 text-xs text-[var(--muted-foreground)] cursor-pointer select-none">
                   <input id="toggle-cpf-aw" type="checkbox" class="h-3.5 w-3.5 accent-[var(--success)]" />
-                  Include Bonus AW cap (max S$20,400)
+                  Include bonus CPF (up to S$20,400/yr)
                 </label>
                 <div id="cpf-override-wrap" class="flex items-center gap-1.5"></div>
               </div>
             </div>
 
+            <!-- NSman Relief Toggle -->
             <div id="nsman-card" class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] p-3.5">
               <div class="flex items-center justify-between gap-3">
                 <div>
@@ -322,23 +281,24 @@
               <div id="nsman-tiers" class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-2.5 border-t border-[var(--card-border)]"></div>
             </div>
 
+            <!-- Selectable Other Personal Reliefs (Auto-Calculated) -->
             <div class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] overflow-hidden">
               <button id="btn-toggle-advanced" type="button" class="flex w-full items-center justify-between px-3.5 py-2.5 text-left cursor-pointer">
                 <div>
                   <span class="text-xs font-semibold text-[var(--foreground)]">Other Personal Reliefs</span>
-                  <span id="advanced-summary" class="ml-2 text-xs text-[var(--muted-foreground)] tabular-nums">EIR S$1,000</span>
+                  <span id="advanced-summary" class="ml-2 text-xs text-[var(--muted-foreground)] tabular-nums">Earned Income S$1,000</span>
                 </div>
                 <span id="advanced-chevron" class="text-xs text-[var(--muted-foreground)]">▲</span>
               </button>
               <div id="advanced-panel" class="border-t border-[var(--card-border)] p-3.5 space-y-3.5">
                 <div>
-                  <div class="text-xs font-semibold text-[var(--muted-foreground)] mb-1.5">Age Bracket (Auto Earned Income Relief)</div>
+                  <div class="text-xs font-semibold text-[var(--muted-foreground)] mb-1.5">Age Bracket (Automatic Earned Income Relief)</div>
                   <div id="age-buttons" class="grid grid-cols-3 gap-1.5"></div>
                 </div>
 
                 <div class="pt-2 border-t border-[var(--card-border)]">
                   <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-semibold text-[var(--muted-foreground)]">Select YA 2026 Reliefs (Auto-Calculated)</span>
+                    <span class="text-xs font-semibold text-[var(--muted-foreground)]">Select Applicable YA 2026 Reliefs</span>
                     <span id="other-reliefs-subtotal" class="text-xs font-bold text-[var(--success)] tabular-nums"></span>
                   </div>
                   <div id="other-reliefs-picker" class="space-y-2"></div>
@@ -360,24 +320,28 @@
         </section>
       </div>
 
-      <!-- Right Column: Interactive Top-Up Sliders + Bracket Exposure Bar Chart -->
+      <!-- Right Column: Step 2 Top-Up Sliders + Step 3 Bracket Exposure Bar Chart -->
       <div class="lg:col-span-7 space-y-6">
+        <!-- Voluntary Top-Ups Panel -->
         <section class="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
-          <div class="flex flex-wrap items-center justify-between gap-3 pb-3.5 border-b border-[var(--card-border)]">
-            <div>
-              <h2 class="text-sm font-bold text-[var(--foreground)]">Tax-Deductible Top-Up Sliders</h2>
-              <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Live Instant Tax ROI % on every dollar contributed</p>
+          <div class="flex flex-wrap items-start justify-between gap-3 pb-3.5 border-b border-[var(--card-border)]">
+            <div class="flex items-start gap-2.5">
+              <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--success)] text-xs font-bold text-[var(--primary-foreground)]">2</span>
+              <div>
+                <h2 class="text-sm font-bold text-[var(--foreground)]">Optimise with Voluntary Top-Ups</h2>
+                <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Drag SRS &amp; CPF sliders to see live Instant Tax ROI on every dollar</p>
+              </div>
             </div>
             <div class="flex items-center gap-2">
               <button
                 id="btn-step-further"
                 type="button"
-                class="hidden items-center gap-1 rounded-lg border border-[var(--success)] px-3 py-1.5 text-xs font-semibold text-[var(--success)] transition hover:opacity-85 cursor-pointer"
+                class="hidden items-center gap-1 rounded-lg border border-[var(--success)] px-3 py-1.5 text-xs font-semibold text-[var(--success)] transition hover:opacity-85 cursor-pointer tabular-nums"
               ></button>
               <button
                 id="btn-auto-optimize-card"
                 type="button"
-                class="inline-flex items-center gap-1.5 rounded-lg bg-[var(--primary)] px-3.5 py-1.5 text-xs font-semibold text-[var(--primary-foreground)] transition hover:opacity-90 cursor-pointer"
+                class="inline-flex items-center gap-1.5 rounded-lg bg-[var(--primary)] px-3 py-1.5 text-xs font-semibold text-[var(--primary-foreground)] transition hover:opacity-90 cursor-pointer tabular-nums"
               >
                 Auto-Optimize Top-Ups
               </button>
@@ -388,6 +352,7 @@
           <div id="cap-warning-banner" class="hidden mt-4 rounded-xl border border-[var(--error)] px-3.5 py-2.5 text-xs leading-relaxed text-[var(--error)]" style="background: color-mix(in srgb, var(--error) 10%, transparent);"></div>
 
           <div class="mt-4 space-y-3.5">
+            <!-- Slider 1: SRS -->
             <div id="card-srs" class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] p-4">
               <div class="flex flex-wrap items-start justify-between gap-2">
                 <div>
@@ -415,11 +380,12 @@
               </div>
             </div>
 
+            <!-- Slider 2: CPF RSTU Self -->
             <div id="card-rstu-self" class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] p-4">
               <div class="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <div class="flex flex-wrap items-center gap-2">
-                    <label for="slider-rstu-self" class="text-sm font-semibold text-[var(--foreground)]">CPF RSTU (Self)</label>
+                    <label for="slider-rstu-self" class="text-sm font-semibold text-[var(--foreground)]">CPF Top-Up — Self (RSTU)</label>
                     <span id="roi-rstu-self" class="rounded-full px-2.5 py-0.5 text-xs font-bold tabular-nums"></span>
                   </div>
                   <p id="sub-rstu-self" class="text-xs text-[var(--muted-foreground)] mt-0.5"></p>
@@ -442,11 +408,12 @@
               </div>
             </div>
 
+            <!-- Slider 3: CPF RSTU Loved Ones -->
             <div id="card-rstu-loved" class="rounded-xl border border-[var(--card-border)] bg-[var(--content)] p-4">
               <div class="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <div class="flex flex-wrap items-center gap-2">
-                    <label for="slider-rstu-loved" class="text-sm font-semibold text-[var(--foreground)]">CPF RSTU (Loved Ones)</label>
+                    <label for="slider-rstu-loved" class="text-sm font-semibold text-[var(--foreground)]">CPF Top-Up — Family (RSTU)</label>
                     <span id="roi-rstu-loved" class="rounded-full px-2.5 py-0.5 text-xs font-bold tabular-nums"></span>
                   </div>
                   <p id="sub-rstu-loved" class="text-xs text-[var(--muted-foreground)] mt-0.5"></p>
@@ -473,10 +440,13 @@
 
         <!-- Marginal Tax Bracket Exposure Bar Chart -->
         <section class="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
-          <div class="flex flex-wrap items-center justify-between gap-2 pb-3.5 border-b border-[var(--card-border)]">
-            <div>
-              <h2 class="text-sm font-bold text-[var(--foreground)]">Marginal Tax Bracket Exposure</h2>
-              <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Income remaining in your highest IRAS bracket &amp; progressive breakdown</p>
+          <div class="flex flex-wrap items-start justify-between gap-2 pb-3.5 border-b border-[var(--card-border)]">
+            <div class="flex items-start gap-2.5">
+              <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-xs font-bold text-[var(--primary-foreground)]">3</span>
+              <div>
+                <h2 class="text-sm font-bold text-[var(--foreground)]">Your Tax Bracket Exposure</h2>
+                <p class="text-xs text-[var(--muted-foreground)] mt-0.5">See how much income sits in your highest IRAS tax bracket</p>
+              </div>
             </div>
             <span id="badge-bracket-drop" class="hidden rounded-full px-2.5 py-1 text-xs font-semibold text-[var(--success)]" style="background: color-mix(in srgb, var(--success) 15%, transparent);"></span>
           </div>
@@ -886,9 +856,7 @@
       subEl.textContent = subtitleText;
       card.style.opacity = m.enabled ? '1' : '0.6';
 
-      roiEl.textContent = val > 0
-        ? `Instant Tax ROI: ${m.instantRoiPct.toFixed(1)}%`
-        : `Instant ROI: ${m.instantRoiPct.toFixed(1)}% / $1`;
+      roiEl.textContent = `${m.instantRoiPct.toFixed(1)}% Instant Tax ROI`;
 
       if (!m.enabled) {
         roiEl.style.background = 'var(--secondary)';
@@ -907,8 +875,11 @@
       let metaHtml = '';
       if (val > 0) {
         metaHtml += `<span class="font-semibold text-[var(--success)]">Saves ${fmtSGD(m.taxSaved, m.taxSaved % 1 !== 0)}</span>`;
+      } else if (m.enabled && m.nextDollarRoiPct > 0) {
+        const per100 = m.nextDollarRoiPct.toFixed(1).replace(/\.0$/, '');
+        metaHtml += `<span>Saves S$${per100} per S$100</span>`;
       }
-      if (m.enabled && val < m.max) {
+      if (m.enabled && val > 0 && val < m.max) {
         const cls = m.nextDollarRoiPct === 0 ? 'text-[var(--error)] font-semibold' : '';
         metaHtml += `<span class="${cls}">Next $1: ${m.nextDollarRoiPct.toFixed(1)}%</span>`;
       }
@@ -940,6 +911,7 @@
         bd.total > 0 ? `+${fmtSGD(bd.total)}` : '';
 
       document.getElementById('other-reliefs-picker').innerHTML = `
+        <!-- Spouse Relief -->
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.spouseEnabled)}">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
@@ -960,6 +932,7 @@
             </div>` : ''}
         </div>
 
+        <!-- Qualifying Child Relief -->
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.qcrEnabled)}">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
@@ -980,6 +953,7 @@
             </div>` : ''}
         </div>
 
+        <!-- Working Mother's Child Relief -->
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.wmcrEnabled)}">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
@@ -1002,6 +976,7 @@
             </div>` : ''}
         </div>
 
+        <!-- Parent Relief -->
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.parentEnabled)}">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
@@ -1028,6 +1003,7 @@
             </div>` : ''}
         </div>
 
+        <!-- Grandparent Caregiver Relief -->
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.gcrEnabled)}">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
@@ -1040,6 +1016,7 @@
           </div>
         </div>
 
+        <!-- Life Insurance Relief -->
         <div class="rounded-lg border px-3 py-2" style="${activeBox(sel.lifeInsuranceEnabled && bd.lifeCap > 0)}; opacity:${bd.lifeCap === 0 ? '0.6' : '1'};">
           <div class="flex items-center justify-between gap-2">
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--foreground)] cursor-pointer select-none">
@@ -1058,34 +1035,36 @@
       const sc = computeScenario(state);
       const isOverCap = sc.excessWasted > 0;
 
+      // Top KPIs
       document.getElementById('kpi-tax-payable').textContent = fmtSGD(sc.taxPayable);
-      document.getElementById('kpi-marginal-badge').textContent = `${fmtRate(sc.currTop.rate * 100)} marginal`;
-      document.getElementById('kpi-chargeable-sub').textContent = `Chargeable: ${fmtSGD(sc.ci)}`;
+      document.getElementById('kpi-marginal-badge').textContent = `${fmtRate(sc.currTop.rate * 100)} top rate`;
+      document.getElementById('kpi-chargeable-sub').textContent = `Chargeable income: ${fmtSGD(sc.ci)}`;
 
       document.getElementById('kpi-tax-saved').textContent = fmtSGD(sc.totalSaved);
       const topUpBadge = document.getElementById('kpi-topup-saved-badge');
       if (sc.topUpSaved > 0) {
         topUpBadge.textContent = `+${fmtSGD(sc.topUpSaved)} top-ups`;
         topUpBadge.classList.remove('hidden');
-        document.getElementById('kpi-tax-saved-sub').textContent = `Down from ${fmtSGD(sc.baseTax)} pre-top-up`;
+        document.getElementById('kpi-tax-saved-sub').textContent = `Saves ${fmtSGD(sc.topUpSaved)} extra from top-ups`;
       } else {
         topUpBadge.classList.add('hidden');
-        document.getElementById('kpi-tax-saved-sub').textContent = `vs ${fmtSGD(sc.grossTax)} without reliefs`;
+        document.getElementById('kpi-tax-saved-sub').textContent = `vs ${fmtSGD(sc.grossTax)} with no reliefs`;
       }
 
       document.getElementById('kpi-effective-rate').textContent = `${sc.effRate.toFixed(2)}%`;
       const effDelta = sc.baseEffRate - sc.effRate;
       const effSub = document.getElementById('kpi-effective-sub');
       if (effDelta > 0.005) {
-        effSub.innerHTML = `<span class="text-[var(--success)] font-semibold">-${effDelta.toFixed(2)}% saved</span>`;
+        effSub.innerHTML = `<span class="text-[var(--success)] font-semibold">-${effDelta.toFixed(2)}% via top-ups</span>`;
       } else {
-        effSub.textContent = 'of gross income';
+        effSub.textContent = 'of annual income';
       }
 
       const resetBtn = document.getElementById('btn-reset-topups');
       resetBtn.classList.toggle('hidden', sc.totalTopUps === 0);
       resetBtn.classList.toggle('inline-flex', sc.totalTopUps > 0);
 
+      // $80k Cap Progress Bar
       const basePct = Math.min(100, (sc.baseEff / RELIEF_CAP) * 100);
       const effTopUp = Math.max(0, sc.effTotal - sc.baseEff);
       const topUpPct = Math.min(100 - basePct, (effTopUp / RELIEF_CAP) * 100);
@@ -1097,7 +1076,7 @@
       topBar.style.width = `${topUpPct}%`;
       topBar.style.background = isOverCap ? 'var(--error)' : 'var(--success)';
       document.getElementById('cap-dot-topup').style.background = isOverCap ? 'var(--error)' : 'var(--success)';
-      document.getElementById('cap-legend-base').textContent = `Base ${fmtSGD(sc.baseEff)}`;
+      document.getElementById('cap-legend-base').textContent = `Existing ${fmtSGD(sc.baseEff)}`;
       document.getElementById('cap-legend-topup').textContent = `Top-Ups ${fmtSGD(sc.totalTopUps)}`;
 
       const capStatus = document.getElementById('cap-status-text');
@@ -1112,9 +1091,11 @@
         capBox.style.borderColor = 'var(--card-border)';
       }
 
-      document.getElementById('badge-base-reliefs').textContent = `Base: ${fmtSGD(sc.baseEff)}`;
+      // Step 1 Inputs
+      document.getElementById('badge-base-reliefs').textContent = `Existing Reliefs: ${fmtSGD(sc.baseEff)}`;
       document.getElementById('readout-monthly-income').textContent = `≈ ${fmtSGD(Math.round(sc.income / 12))}/mo`;
 
+      // Citizenship toggle
       const citBtn = document.getElementById('btn-citizen-pr');
       const forBtn = document.getElementById('btn-foreigner');
       const applySeg = (el, active) => {
@@ -1125,9 +1106,10 @@
       applySeg(citBtn, sc.isCit);
       applySeg(forBtn, !sc.isCit);
 
+      // CPF
       document.getElementById('readout-employee-cpf').textContent = fmtSGD(sc.cpf);
       document.getElementById('cpf-subtitle').textContent = sc.isCit
-        ? (state.includeCpfAwBonusCap ? 'Auto: 20% up to S$102k ceiling (OW + Bonus AW)' : 'Auto: 20% up to S$8,000/mo OW ceiling (max S$19,200/yr)')
+        ? (state.includeCpfAwBonusCap ? '20% of salary + bonus up to S$102,000/yr (max S$20,400)' : '20% of salary up to S$8,000/mo (max S$19,200/yr)')
         : 'Not applicable to foreigners on work passes';
       document.getElementById('cpf-controls').style.display = sc.isCit ? 'flex' : 'none';
       document.getElementById('toggle-cpf-aw').checked = state.includeCpfAwBonusCap;
@@ -1136,9 +1118,10 @@
       if (state.customCpfOverride === null) {
         cpfOvWrap.innerHTML = `<button id="btn-edit-cpf" type="button" class="text-xs font-medium text-[var(--link)] underline cursor-pointer">Edit manually</button>`;
       } else {
-        cpfOvWrap.innerHTML = `<input id="input-custom-cpf" type="number" min="0" max="37740" step="100" value="${state.customCpfOverride}" class="w-24 rounded-md border border-[var(--border)] bg-[var(--card)] px-2 py-1 text-xs font-semibold tabular-nums text-[var(--foreground)]" /><button id="btn-auto-cpf" type="button" class="text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer">Auto</button>`;
+        cpfOvWrap.innerHTML = `<input id="input-custom-cpf" type="number" min="0" max="37740" step="100" value="${state.customCpfOverride}" class="w-24 rounded-md border border-[var(--border)] bg-[var(--card)] px-2 py-1 text-xs font-semibold tabular-nums text-[var(--foreground)]" /><button id="btn-auto-cpf" type="button" class="text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer">Reset to Auto</button>`;
       }
 
+      // NSman
       const nsCard = document.getElementById('nsman-card');
       const nsBtn = document.getElementById('toggle-nsman');
       const nsKnob = document.getElementById('toggle-nsman-knob');
@@ -1167,8 +1150,9 @@
         nsTiersEl.classList.add('hidden');
       }
 
+      // Other Personal Reliefs Picker
       document.getElementById('advanced-summary').innerHTML =
-        `EIR ${fmtSGD(sc.eir)}` +
+        `Earned Income ${fmtSGD(sc.eir)}` +
         (sc.otherBd.total > 0 ? ` <span class="text-[var(--success)] font-semibold">+ ${fmtSGD(sc.otherBd.total)} (${sc.otherBd.selectedCount})</span>` : '');
       document.getElementById('advanced-panel').classList.toggle('hidden', !state.showAdvanced);
       document.getElementById('advanced-chevron').textContent = state.showAdvanced ? '▲' : '▼';
@@ -1182,15 +1166,29 @@
       }).join('');
       renderOtherReliefsPicker(sc);
 
+      // Smart contextual bracket-drop button in Step 2 (no duplicate generic CTA)
       const stepBtn = document.getElementById('btn-step-further');
+      const cardOptBtn = document.getElementById('btn-auto-optimize-card');
       const alreadyDropped = sc.currTop.index < sc.baseTop.index;
       if (alreadyDropped && sc.canDropNext && sc.nextLower) {
-        stepBtn.textContent = `Drop to ${fmtRate(sc.nextLower.rate * 100)}`;
+        stepBtn.textContent = `Drop to ${fmtRate(sc.nextLower.rate * 100)} (+${fmtSGD(sc.neededToDrop)})`;
         stepBtn.classList.remove('hidden');
         stepBtn.classList.add('inline-flex');
+        cardOptBtn.classList.add('hidden');
+        cardOptBtn.classList.remove('inline-flex');
+      } else if (!alreadyDropped && sc.nextLower && sc.neededToDrop > 0) {
+        stepBtn.classList.add('hidden');
+        stepBtn.classList.remove('inline-flex');
+        cardOptBtn.textContent = sc.canDropNext
+          ? `Drop to ${fmtRate(sc.nextLower.rate * 100)} (+${fmtSGD(sc.neededToDrop)})`
+          : 'Auto-Optimize Top-Ups';
+        cardOptBtn.classList.remove('hidden');
+        cardOptBtn.classList.add('inline-flex');
       } else {
         stepBtn.classList.add('hidden');
         stepBtn.classList.remove('inline-flex');
+        cardOptBtn.classList.add('hidden');
+        cardOptBtn.classList.remove('inline-flex');
       }
 
       const optBanner = document.getElementById('optimize-banner');
@@ -1214,6 +1212,7 @@
         capWarn.classList.add('hidden');
       }
 
+      // Sliders
       document.getElementById('cap-label-srs').textContent = `Cap: ${fmtSGD(sc.srsCap)}`;
       document.getElementById('cap-label-rstu-self').textContent = `Cap: ${fmtSGD(sc.rstuSelfCap)}`;
 
@@ -1221,12 +1220,13 @@
         sc.isCit ? 'Supplementary Retirement Scheme · Citizen / PR cap S$15,300' : 'Supplementary Retirement Scheme · Foreigner cap S$35,700'
       );
       updateSliderUI('rstu-self', sc.rstuSelf, sc.rstuSelfMetrics, isOverCap,
-        sc.isCit ? 'Cash top-up to your own CPF Special / Retirement Account (max S$8,000)' : 'Available only to Singapore Citizens & PRs with CPF accounts'
+        sc.isCit ? 'Top up your own CPF Special / Retirement Account (max S$8,000)' : 'Available only to Singapore Citizens & PRs with CPF accounts'
       );
       updateSliderUI('rstu-loved', sc.rstuLoved, sc.rstuLovedMetrics, isOverCap,
-        sc.isCit ? 'Cash top-up to parents, spouse, grandparents, or siblings CPF SA/RA (max S$8,000)' : 'Cash top-up to SC/PR family members CPF SA/RA (max S$8,000)'
+        sc.isCit ? "Top up parents, spouse, grandparents, or siblings' CPF (max S$8,000)" : "Top up SC/PR family members' CPF (max S$8,000)"
       );
 
+      // Spotlight Highest Marginal Bracket Bar Chart
       const dropBadge = document.getElementById('badge-bracket-drop');
       if (alreadyDropped) {
         dropBadge.textContent = `Dropped ${fmtRate(sc.baseTop.rate * 100)} → ${fmtRate(sc.currTop.rate * 100)}`;
@@ -1263,13 +1263,15 @@
         : 'No ceiling';
       const spCta = document.getElementById('spotlight-cta');
       if (sc.nextLower && sc.neededToDrop > 0) {
-        spCta.textContent = `Need ${fmtSGD(sc.neededToDrop)} relief to drop to ${fmtRate(sc.nextLower.rate * 100)}`;
+        const dropSave = Math.round(sc.neededToDrop * sc.currTop.rate);
+        spCta.textContent = `Shield ${fmtSGD(sc.neededToDrop)} to drop to ${fmtRate(sc.nextLower.rate * 100)} (saves ${fmtSGD(dropSave)})`;
         spCta.style.color = 'var(--foreground)';
       } else {
         spCta.textContent = '0% Tax-Free Bracket — Maximum Efficiency';
         spCta.style.color = 'var(--success)';
       }
 
+      // Multi-bracket bar chart
       const maxBarVal = Math.max(40000, ...sc.bracketRows.map((r) => Math.max(r.baseIn, r.width)));
       document.getElementById('bracket-bars-list').innerHTML = sc.bracketRows.slice().reverse().map((r) => {
         const capPct = Math.max(15, Math.min(100, (r.width / maxBarVal) * 100));
@@ -1313,6 +1315,7 @@
           </div>`;
       }).join('');
 
+      // Ledger (itemizing each selected other relief individually)
       const items = [
         { label: 'Earned Income Relief (Auto)', val: sc.eir },
         { label: 'Employee CPF Relief', val: sc.cpf },
@@ -1352,6 +1355,7 @@
         </div>`;
     }
 
+    // Event wiring
     document.getElementById('input-annual-income').addEventListener('input', (e) => {
       const n = Number(e.target.value);
       state.annualIncome = Number.isFinite(n) ? Math.max(0, n) : 0;
@@ -1430,6 +1434,7 @@
       render();
     });
 
+    // Event delegation for auto-calculated Other Personal Reliefs picker
     const otherPicker = document.getElementById('other-reliefs-picker');
     otherPicker.addEventListener('change', (e) => {
       const field = e.target.dataset.otherCheck;
@@ -1465,6 +1470,7 @@
       }
     });
 
+    // Sliders + numbers + max buttons
     const bindTopUp = (key, field, getCap) => {
       document.getElementById(`slider-${key}`).addEventListener('input', (e) => {
         state[field] = Number(e.target.value);
